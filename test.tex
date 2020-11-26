@@ -1,0 +1,14 @@
+\documentclass[border=5pt]{standalone}
+
+\usepackage{tikz}
+\usepackage{forest}
+
+\begin{document}
+
+\begin{forest}for tree={rectangle, draw, l sep=20pt}[{\textbf{\textless Program\textgreater}} [{\textbf{PROGNAME}  Atom} ][{\textbf{\textless EndLine\textgreater}} [{\textbf{ENDLINE}  \n} ][{\textbf{\textless EndLine'\textgreater}} [{$\varepsilon$} ]]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  a} ][{\textbf{ASSIGN}  :=} ][{\textbf{\textless ExprArith\textgreater}} [{\textbf{\textless Prod\textgreater}} [{\textbf{\textless Atom\textgreater}} [{\textbf{MINUS}  -} ][{\textbf{\textless Atom\textgreater}} [{\textbf{NUMBER}  2} ]]][{\textbf{\textless Prod'\textgreater}} [{$\varepsilon$} ]]][{\textbf{\textless ExprArith'\textgreater}} [{\textbf{PLUS}  +} ][{\textbf{\textless Prod\textgreater}} [{\textbf{\textless Atom\textgreater}} [{\textbf{NUMBER}  3} ]][{\textbf{\textless Prod'\textgreater}} [{\textbf{TIMES}  *} ][{\textbf{\textless Atom\textgreater}} [{\textbf{LPAREN}  (} ][{\textbf{\textless ExprArith\textgreater}} [{\textbf{\textless Prod\textgreater}} [{\textbf{\textless Atom\textgreater}} [{\textbf{NUMBER}  6} ]][{\textbf{\textless Prod'\textgreater}} [{$\varepsilon$} ]]][{\textbf{\textless ExprArith'\textgreater}} [{\textbf{PLUS}  +} ][{\textbf{\textless Prod\textgreater}} [{\textbf{\textless Atom\textgreater}} [{\textbf{NUMBER}  1} ]][{\textbf{\textless Prod'\textgreater}} [{$\varepsilon$} ]]][{\textbf{\textless ExprArith'\textgreater}} [{$\varepsilon$} ]]]][{\textbf{RPAREN}  )} ]][{\textbf{\textless Prod'\textgreater}} [{\textbf{DIVIDE}  /} ][{\textbf{\textless Atom\textgreater}} [{\textbf{NUMBER}  5} ]][{\textbf{\textless Prod'\textgreater}} [{$\varepsilon$} ]]]]][{\textbf{\textless ExprArith'\textgreater}} [{$\varepsilon$} ]]]]][{\textbf{\textless EndLine\textgreater}} [{\textbf{ENDLINE}  \n} ][{\textbf{\textless EndLine'\textgreater}} [{$\varepsilon$} ]]][{\textbf{\textless Code\textgreater}} [{$\varepsilon$} ]]][{\textbf{ENDPROG}  ENDPROG} ]];
+\end{forest}
+
+\end{document}
+%% Local Variables:
+%% TeX-engine: pdflatex
+%% End:

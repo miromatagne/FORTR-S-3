@@ -34,6 +34,16 @@ public class Main {
       tokens = getTokens(fileName);
       Parser parser = new Parser(tokens, false);
       List<Integer> rules = parser.start();
+      ParseTree ast = buildAST(parser.getTree());
+      FileWriter myWriter;
+      try {
+        myWriter = new FileWriter("test.tex");
+        myWriter.write(ast.toLaTeX());
+        myWriter.close();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
       if (rules != null) {
         printRules(rules);
       }
@@ -145,12 +155,21 @@ public class Main {
     }
   }
 
-  // private static ParseTree buildAST(ParseTree parseTree) {
-  //   ParseTree ast = new ParseTree(new Symbol("Program"));
-  //   for(ParseTree child : parseTree.getChildren()) {
-  //     if(child.getLabel().getValue() == "Instruction") {
-        
-  //     }
-  //   }
-  // }
+  private static ParseTree buildAST(ParseTree parseTree) {
+    // ParseTree ast = new ParseTree(new Symbol("Program"));
+    List<ParseTree> children = parseTree.getChildren();
+    for(int i = 0; i < children.size(); i++) {
+      System.out.println(children.get(i).getLabel().getValue());
+      if(children.get(i).getLabel().getValue() == "Instruction") {
+        children.set(i, children.get(i).getChildren().get(0));
+      }
+      if(children.get(i).getLabel().getType() == LexicalUnit.BEGINPROG) {
+        System.out.println("ok");
+        children.remove(i);
+      }
+      children.set(i,buildAST(children.get(i)));
+    }
+    parseTree.setChildren(children);
+    return parseTree;
+  }
 }
