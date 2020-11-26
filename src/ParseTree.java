@@ -42,6 +42,10 @@ public class ParseTree {
         return children;
     }
 
+    public Symbol getLabel() {
+        return label;
+    }
+
     /**
      * Writes the tree as LaTeX code
      * @return the complete LaTeX code corresponding to the tree

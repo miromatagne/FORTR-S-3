@@ -26,28 +26,19 @@ public class Main {
    */
   public static void main(String[] argv) {
     // Syntax check
-    boolean valid = true;
     if (argv.length != 1) {
       System.out.println("Invalid number of arguments");
-      valid = false;
-    }
-    else {
-      fileName=argv[0];
-    List<Symbol> tokens = new ArrayList<Symbol>();
-    tokens = getTokens(fileName);
-    Parser parser = new Parser(tokens, verbose);
-    List<Integer> rules = parser.start();
-    if (rules != null) {
-      if (verbose) {
-        printVerboseRules(rules);
-      } else {
+    } else {
+      String fileName = argv[0];
+      List<Symbol> tokens = new ArrayList<Symbol>();
+      tokens = getTokens(fileName);
+      Parser parser = new Parser(tokens, false);
+      List<Integer> rules = parser.start();
+      if (rules != null) {
         printRules(rules);
       }
-      if (texFileName != null) {
-        writeToTex(parser, texFileName);
-      }
     }
-  }}
+  }
 
   /**
    * Returns all the tokens from the lexical analyzer
@@ -153,4 +144,13 @@ public class Main {
       e.printStackTrace();
     }
   }
+
+  // private static ParseTree buildAST(ParseTree parseTree) {
+  //   ParseTree ast = new ParseTree(new Symbol("Program"));
+  //   for(ParseTree child : parseTree.getChildren()) {
+  //     if(child.getLabel().getValue() == "Instruction") {
+        
+  //     }
+  //   }
+  // }
 }

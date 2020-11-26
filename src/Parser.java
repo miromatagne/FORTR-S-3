@@ -28,9 +28,6 @@ public class Parser {
      */
     public List<Integer> start() {
         tree = program();
-        // tree = atom();
-        // tree = assign();
-
         if (errorMessage != null) {
             System.out.println(errorMessage);
             return null;
