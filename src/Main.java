@@ -158,16 +158,23 @@ public class Main {
   private static ParseTree buildAST(ParseTree parseTree) {
     // ParseTree ast = new ParseTree(new Symbol("Program"));
     List<ParseTree> children = parseTree.getChildren();
-    for(int i = 0; i < children.size(); i++) {
-      System.out.println(children.get(i).getLabel().getValue());
-      if(children.get(i).getLabel().getValue() == "Instruction") {
-        children.set(i, children.get(i).getChildren().get(0));
+    int i = 0;
+    while(i < children.size()) {
+      switch (children.get(i).getLabel().getValue().toString()) {
+        case "Instruction":
+          children.set(i, children.get(i).getChildren().get(0));
+          children.set(i, buildAST(children.get(i)));
+          break;
+        case "BEGINPROG":
+        case "EndLine":
+        case "ENDPROG":
+          System.out.println("ok");
+          children.remove(i);
+          break;
+        default:
+          children.set(i, buildAST(children.get(i)));
       }
-      if(children.get(i).getLabel().getType() == LexicalUnit.BEGINPROG) {
-        System.out.println("ok");
-        children.remove(i);
-      }
-      children.set(i,buildAST(children.get(i)));
+      i++;
     }
     parseTree.setChildren(children);
     return parseTree;
