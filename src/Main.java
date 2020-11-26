@@ -27,45 +27,27 @@ public class Main {
   public static void main(String[] argv) {
     // Syntax check
     boolean valid = true;
-    if (argv.length == 0) {
+    if (argv.length != 1) {
       System.out.println("Invalid number of arguments");
       valid = false;
     }
-    boolean verbose = false;
-    String texFileName = null;
-    String fileName = null;
-    for (int i = 0; i < argv.length; i++) {
-      if (argv[i].equals("-v")) {
-        verbose = true;
-      } else if (argv[i].equals("-wt")) {
-        if (i != argv.length - 1 && argv[i + 1].charAt(0) != '-') {
-          texFileName = argv[i + 1];
-          i++;
-        } else {
-          System.out.println("-wt should be followed by a file name.");
-          valid = false;
-        }
+    else {
+      fileName=argv[0];
+    List<Symbol> tokens = new ArrayList<Symbol>();
+    tokens = getTokens(fileName);
+    Parser parser = new Parser(tokens, verbose);
+    List<Integer> rules = parser.start();
+    if (rules != null) {
+      if (verbose) {
+        printVerboseRules(rules);
       } else {
-        fileName = argv[i];
+        printRules(rules);
+      }
+      if (texFileName != null) {
+        writeToTex(parser, texFileName);
       }
     }
-    if (valid && fileName != null) {
-      List<Symbol> tokens = new ArrayList<Symbol>();
-      tokens = getTokens(fileName);
-      Parser parser = new Parser(tokens, verbose);
-      List<Integer> rules = parser.start();
-      if (rules != null) {
-        if (verbose) {
-          printVerboseRules(rules);
-        } else {
-          printRules(rules);
-        }
-        if (texFileName != null) {
-          writeToTex(parser, texFileName);
-        }
-      }
-    }
-  }
+  }}
 
   /**
    * Returns all the tokens from the lexical analyzer
