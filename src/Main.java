@@ -183,6 +183,7 @@ public class Main {
           }
           else if(children.get(i).getChildren().size() == 3) {
             children.set(i,buildAST(children.get(i).getChildren().get(1)));
+            i -= 2;
           }
           else {
             children.set(i, buildAST(children.get(i)));
