@@ -160,19 +160,58 @@ public class Main {
     List<ParseTree> children = parseTree.getChildren();
     int i = 0;
     while(i < children.size()) {
-      switch (children.get(i).getLabel().getValue().toString()) {
+      //System.out.println(children.get(i).getLabel().getASTString());
+      switch (children.get(i).getLabel().getASTString()) {
         case "Instruction":
-          children.set(i, children.get(i).getChildren().get(0));
-          children.set(i, buildAST(children.get(i)));
+          children.set(i, buildAST(children.get(i).getChildren().get(0)));
+          break;
+        case "Code":
+        case "ExprArith'":
+        case "Prod'":
+          if(children.get(i).getChildren().size() == 1 && children.get(i).getChildren().get(0).getLabel().getASTString() == "epsilon") {
+            children.remove(i);
+            i--;
+          }
+          else {
+            children.set(i, buildAST(children.get(i)));
+          }
+          break;
+        case "Atom":
+          // System.out.println(children.get(i).getChildren().get(0).getLabel().getValue());
+          if(children.get(i).getChildren().size() == 1) {
+            children.set(i,buildAST(children.get(i).getChildren().get(0)));
+          }
+          else if(children.get(i).getChildren().size() == 3) {
+            children.set(i,buildAST(children.get(i).getChildren().get(1)));
+          }
+          else {
+            children.set(i, buildAST(children.get(i)));
+          }
+          break;
+        case "Prod":
+          if(children.get(i).getChildren().size() == 2 && children.get(i).getChildren().get(1).getChildren().size() == 1) {
+            children.set(i,buildAST(children.get(i).getChildren().get(0)));
+          }
+          else {
+            children.set(i, buildAST(children.get(i)));
+          }
           break;
         case "BEGINPROG":
+        case "PROGNAME":
         case "EndLine":
+        case "ASSIGN":
         case "ENDPROG":
-          System.out.println("ok");
           children.remove(i);
+          i--;
+          break;   
+        case "ExprArith":
+          System.out.println("OK");
+          children.set(i, buildAST(children.get(i)));
           break;
         default:
+          // System.out.println("ok");
           children.set(i, buildAST(children.get(i)));
+          break;
       }
       i++;
     }

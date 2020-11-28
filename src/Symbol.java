@@ -102,4 +102,13 @@ public class Symbol{
 			}
 		}
 	}
+
+	public String getASTString() {
+		if(this.isTerminal()){
+      		return type.toString(); 
+		}
+		else{
+			return value.toString();
+		}
+	}
 }
