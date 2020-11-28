@@ -34,7 +34,8 @@ public class Main {
       tokens = getTokens(fileName);
       Parser parser = new Parser(tokens, false);
       List<Integer> rules = parser.start();
-      ParseTree ast = buildAST(parser.getTree());
+      ParseTree cleanTree = cleanTree(parser.getTree());
+      ParseTree ast = buildAST(cleanTree);
       FileWriter myWriter;
       try {
         myWriter = new FileWriter("test.tex");
@@ -155,7 +156,7 @@ public class Main {
     }
   }
 
-  private static ParseTree buildAST(ParseTree parseTree) {
+  private static ParseTree cleanTree(ParseTree parseTree) {
     // ParseTree ast = new ParseTree(new Symbol("Program"));
     List<ParseTree> children = parseTree.getChildren();
     int i = 0;
@@ -163,7 +164,7 @@ public class Main {
       //System.out.println(children.get(i).getLabel().getASTString());
       switch (children.get(i).getLabel().getASTString()) {
         case "Instruction":
-          children.set(i, buildAST(children.get(i).getChildren().get(0)));
+          children.set(i, cleanTree(children.get(i).getChildren().get(0)));
           break;
         case "Code":
         case "ExprArith'":
@@ -173,28 +174,28 @@ public class Main {
             i--;
           }
           else {
-            children.set(i, buildAST(children.get(i)));
+            children.set(i, cleanTree(children.get(i)));
           }
           break;
         case "Atom":
           // System.out.println(children.get(i).getChildren().get(0).getLabel().getValue());
           if(children.get(i).getChildren().size() == 1) {
-            children.set(i,buildAST(children.get(i).getChildren().get(0)));
+            children.set(i,cleanTree(children.get(i).getChildren().get(0)));
           }
           else if(children.get(i).getChildren().size() == 3) {
-            children.set(i,buildAST(children.get(i).getChildren().get(1)));
+            children.set(i,cleanTree(children.get(i).getChildren().get(1)));
             i -= 2;
           }
           else {
-            children.set(i, buildAST(children.get(i)));
+            children.set(i, cleanTree(children.get(i)));
           }
           break;
         case "Prod":
           if(children.get(i).getChildren().size() == 2 && children.get(i).getChildren().get(1).getChildren().size() == 1) {
-            children.set(i,buildAST(children.get(i).getChildren().get(0)));
+            children.set(i,cleanTree(children.get(i).getChildren().get(0)));
           }
           else {
-            children.set(i, buildAST(children.get(i)));
+            children.set(i, cleanTree(children.get(i)));
           }
           break;
         case "BEGINPROG":
@@ -207,7 +208,49 @@ public class Main {
           break;   
         case "ExprArith":
           System.out.println("OK");
-          children.set(i, buildAST(children.get(i)));
+          children.set(i, cleanTree(children.get(i)));
+          break;
+        default:
+          // System.out.println("ok");
+          children.set(i, cleanTree(children.get(i)));
+          break;
+      }
+      i++;
+    }
+    parseTree.setChildren(children);
+    return parseTree;
+  }
+
+  private static ParseTree buildAST(ParseTree parseTree) {
+    List<ParseTree> children = parseTree.getChildren();
+    int i = 0;
+    while(i < children.size()) {
+      switch (children.get(i).getLabel().getASTString()) {
+        case "Atom":
+          if(children.get(i).getChildren().size() == 2) {
+            children.get(i).getChildren().get(1).getLabel().setValue("-" + children.get(i).getChildren().get(1).getLabel().getValue());
+            children.set(i,buildAST(children.get(i).getChildren().get(1)));
+          }
+          break;
+        case "ExprArith":
+        case "Prod":
+          children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
+          break;
+        case "ExprArith'":
+        case "Prod'":
+          if(children.get(i).getChildren().size() == 3) {
+            System.out.println("OKOKOK");
+            children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
+          }
+          else {
+            children.set(i, buildAST(children.get(i)));
+          }
+          break;
+        case "PLUS":
+        case "TIMES":
+        case "DIVIDE":
+          children.remove(i);
+          i--;
           break;
         default:
           // System.out.println("ok");
