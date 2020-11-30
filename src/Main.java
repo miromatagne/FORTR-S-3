@@ -38,6 +38,13 @@ public class Main {
       ParseTree tree2 = buildAST(cleanTree);
       ParseTree tree3 = removeExprArith(tree2);
       ParseTree ast = fixAssociativity(tree3);
+      Llvm llvm = new Llvm(ast);
+      
+      String code = llvm.getLlvm();
+      if (code != "") {
+        System.out.println(code);
+      }
+
       FileWriter myWriter;
       try {
         myWriter = new FileWriter("test.tex");
