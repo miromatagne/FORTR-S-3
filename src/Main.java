@@ -170,7 +170,7 @@ public class Main {
     List<ParseTree> children = parseTree.getChildren();
     int i = 0;
     while(i < children.size()) {
-      //System.out.println(children.get(i).getLabel().getASTString());
+      System.out.println(children.get(i).getLabel().getASTString());
       switch (children.get(i).getLabel().getASTString()) {
         case "Instruction":
           children.set(i, cleanTree(children.get(i).getChildren().get(0)));
@@ -189,6 +189,7 @@ public class Main {
         case "Atom":
           // System.out.println(children.get(i).getChildren().get(0).getLabel().getValue());
           if(children.get(i).getChildren().size() == 1) {
+            System.out.println("OK");
             children.set(i,cleanTree(children.get(i).getChildren().get(0)));
           }
           else if(children.get(i).getChildren().size() == 3) {
@@ -201,6 +202,7 @@ public class Main {
           break;
         case "Prod":
           if(children.get(i).getChildren().size() == 2 && children.get(i).getChildren().get(1).getChildren().size() == 1) {
+            cleanTree(children.get(i));
             children.set(i,cleanTree(children.get(i).getChildren().get(0)));
           }
           else {
@@ -242,7 +244,12 @@ public class Main {
           break;
         case "ExprArith":
         case "Prod":
-          children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
+          if(children.get(i).getChildren().size() != 1){
+            children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
+          }
+          else {
+            children.set(i, buildAST(children.get(i)));
+          }
           break;
         case "ExprArith'":
         case "Prod'":
@@ -275,6 +282,8 @@ public class Main {
     int i = 0;
     while(i < children.size()) {
       switch (children.get(i).getLabel().getASTString()) {
+        case "Prod":
+        case "ExprArith":
         case "Prod'":
         case "ExprArith'":
           if(children.get(i).getChildren().size() == 1) {
