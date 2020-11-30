@@ -1,0 +1,3 @@
+BEGINPROG Atom
+    a := 2
+ENDPROG
