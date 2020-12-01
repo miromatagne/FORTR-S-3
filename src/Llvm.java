@@ -3,6 +3,7 @@ import java.util.List;
 public class Llvm {
     private static ParseTree tree;
     private static String llvmCode;
+    private static int line = 0;
     private static String read = "@.strR = private unnamed_addr constant [3 x i8] c\"%d\\00\", align 1" + "\n" + 
         "define i32 @readInt() #0 {" + "\n" + 
         " %1 = alloca i32, align 4" + "\n" +
@@ -42,6 +43,7 @@ public class Llvm {
             String currentCode = null;
             String value = null;
             int i = 0;
+
             while (i < children.size()) {
                 switch (children.get(i).getLabel().getASTString()) {
                     case "Code" :
@@ -53,16 +55,45 @@ public class Llvm {
                         currentCode = analyze(children.get(i));
                         value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
-                        llvmCode.append(" store i32 %value, i32* %" + value);
+                        llvmCode.append(" store i32 %" + String.valueOf((line-1)) + ", i32* %" + value);
                         llvmCode.append("\n");
                         break;
+                    case "TIMES" :
+                        currentCode = analyze(children.get(i));
+                        llvmCode.append(currentCode);
+                        llvmCode.append(" %" + line + " = mul i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append("\n");
+                        line++;
+                        break;
+                    case "DIVIDE" :
+                        currentCode = analyze(children.get(i));
+                        llvmCode.append(currentCode);
+                        llvmCode.append(" %" + line + " = sdiv i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append("\n");
+                        line++;
+                        break;
+                    case "PLUS" :
+                        currentCode = analyze(children.get(i));
+                        llvmCode.append(currentCode);
+                        llvmCode.append(" %" + line + " = add i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append("\n");
+                        line++;
+                        break;
+                    case "MINUS" :
+                        currentCode = analyze(children.get(i));
+                        llvmCode.append(currentCode);
+                        llvmCode.append(" %" + line + " = sub i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append("\n");
+                        line++;
+                        break;  
                     case "VARNAME" :
                         llvmCode.append(" %" + children.get(i).getLabel().getValue().toString() + " = alloca i32");
                         llvmCode.append("\n");
                         break;
                     case "NUMBER" :
-                        llvmCode.append(" %value = constant i32 " + children.get(i).getLabel().getValue().toString());
+                        llvmCode.append(" %"+ String.valueOf(line) + " = constant i32 " + children.get(i).getLabel().getValue().toString());
                         llvmCode.append("\n");
+                        line++;
                         break;
                 }
                 i++;
