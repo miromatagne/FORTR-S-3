@@ -38,8 +38,9 @@ public class Main {
       ParseTree tree2 = buildAST(cleanTree);
       ParseTree tree3 = removeExprArith(tree2);
       ParseTree ast = fixAssociativity(tree3);
-      Llvm llvm = new Llvm(ast);
       
+      Llvm llvm = new Llvm(ast);
+      llvm.start();
       String code = llvm.getLlvm();
       if (code != "") {
         System.out.println(code);
@@ -170,7 +171,7 @@ public class Main {
     List<ParseTree> children = parseTree.getChildren();
     int i = 0;
     while(i < children.size()) {
-      System.out.println(children.get(i).getLabel().getASTString());
+      //System.out.println(children.get(i).getLabel().getASTString());
       switch (children.get(i).getLabel().getASTString()) {
         case "Instruction":
           children.set(i, cleanTree(children.get(i).getChildren().get(0)));
@@ -189,7 +190,7 @@ public class Main {
         case "Atom":
           // System.out.println(children.get(i).getChildren().get(0).getLabel().getValue());
           if(children.get(i).getChildren().size() == 1) {
-            System.out.println("OK");
+            //System.out.println("OK");
             children.set(i,cleanTree(children.get(i).getChildren().get(0)));
           }
           else if(children.get(i).getChildren().size() == 3) {
@@ -312,7 +313,7 @@ public class Main {
           break;
         case "PLUS":
         case "MINUS":
-          System.out.println("OK");
+          //System.out.println("OK");
           children.set(i,getChildParseTree(i,children,"PLUS","MINUS"));
           break;
         default:
