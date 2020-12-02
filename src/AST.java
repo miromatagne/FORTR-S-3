@@ -117,6 +117,7 @@ public class AST {
             case "PLUS":
             case "TIMES":
             case "DIVIDE":
+            case "MINUS":
               children.remove(i);
               i--;
               break;
@@ -166,8 +167,12 @@ public class AST {
               break;
             case "PLUS":
             case "MINUS":
-              //System.out.println("OK");
-              children.set(i,getChildParseTree(i,children,"PLUS","MINUS"));
+                if(children.get(i).getChildren().size() != 0) {
+                    children.set(i,getChildParseTree(i,children,"PLUS","MINUS"));
+                }
+                else {
+                    children.set(i, fixAssociativity(children.get(i)));
+                }
               break;
             default:
               children.set(i, fixAssociativity(children.get(i)));
