@@ -389,7 +389,6 @@ public class Parser {
                 addRule(27);
                 match(new Symbol(LexicalUnit.GT), children);
                 break;
-            
             default:
                 // System.out.println("ERROR");
         }
