@@ -1,3 +1,7 @@
 BEGINPROG Atom
-    a := -2 + 3 * (6 + 1) / 5
+    IF(number == -1) THEN
+        number := -1
+    ELSE
+        number := 0
+ENDIF
 ENDPROG

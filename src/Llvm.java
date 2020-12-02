@@ -61,29 +61,33 @@ public class Llvm {
                     case "TIMES" :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = mul i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append(" %" + line + " = mul i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());    // String.valueOf((line-2))   //String.valueOf((line-1))
                         llvmCode.append("\n");
+                        children.get(i).setCounter(line);
                         line++;
                         break;
                     case "DIVIDE" :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = sdiv i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append(" %" + line + " = sdiv i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
                         llvmCode.append("\n");
+                        children.get(i).setCounter(line);
                         line++;
                         break;
                     case "PLUS" :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = add i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append(" %" + line + " = add i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
                         llvmCode.append("\n");
+                        children.get(i).setCounter(line);
                         line++;
                         break;
                     case "MINUS" :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = sub i32 %" + String.valueOf((line-2)) + ", %" + String.valueOf((line-1)));
+                        llvmCode.append(" %" + line + " = sub i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
                         llvmCode.append("\n");
+                        children.get(i).setCounter(line);
                         line++;
                         break;  
                     case "VARNAME" :
@@ -93,6 +97,7 @@ public class Llvm {
                     case "NUMBER" :
                         llvmCode.append(" %"+ String.valueOf(line) + " = constant i32 " + children.get(i).getLabel().getValue().toString());
                         llvmCode.append("\n");
+                        children.get(i).setCounter(line);
                         line++;
                         break;
                 }
@@ -106,7 +111,7 @@ public class Llvm {
     private String toLlvm() {
         String main = "define i32 @main() {" + "\n" +
         " entry:" + "\n" + 
-        analyze(this.tree) + "\n" +
+        analyze(this.tree) + 
         " ret i32 0" + "\n" +
         "}";
         return /*this.read + "\n" + this.print + "\n" +*/ main;
