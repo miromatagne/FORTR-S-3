@@ -48,7 +48,8 @@ public class Llvm {
                 switch (children.get(i).getLabel().getASTString()) {
                     case "Code" :
                         currentCode = analyze(children.get(i));
-                        value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
+                        //value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
+                        //System.out.println(children.get(i).getChildren().size());
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         break;
                     case "Assign" : 
@@ -56,6 +57,22 @@ public class Llvm {
                         value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         llvmCode.append(" store i32 %" + String.valueOf((line-1)) + ", i32* %" + value);
+                        llvmCode.append("\n");
+                        break;
+                    case "Read" : 
+                        currentCode = analyze(children.get(i));
+                        llvmCode.append(" %" + line + " = call i32 readInt()");
+                        llvmCode.append("\n");
+                        llvmCode.append(currentCode);
+                        llvmCode.append(" store i32 %" + line + ", i32* %" + children.get(i).getChildren().get(0).getLabel().getValue().toString());
+                        llvmCode.append("\n");
+                        children.get(i).setCounter(line);
+                        line++;
+                        break;
+                    case "Print" :
+                        currentCode = analyze(children.get(i)); 
+                        llvmCode.append(currentCode);
+                        llvmCode.append(" call void @println(i32 %" + children.get(i).getChildren().get(0).getLabel().getValue().toString() +")");
                         llvmCode.append("\n");
                         break;
                     case "TIMES" :
@@ -95,10 +112,12 @@ public class Llvm {
                         llvmCode.append("\n");
                         break;
                     case "NUMBER" :
-                        llvmCode.append(" %"+ String.valueOf(line) + " = constant i32 " + children.get(i).getLabel().getValue().toString());
+                        llvmCode.append(" %"+ line + " = constant i32 " + children.get(i).getLabel().getValue().toString());
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
+                        break;
+                    default :
                         break;
                 }
                 i++;
