@@ -29,17 +29,36 @@ public class Symbol{
 		this(unit, UNDEFINED_POSITION, UNDEFINED_POSITION, value);
 	}
 
-	/**
-	 * Constructor of the Symbol class of a non-terminal 
-	 * @param value string indicating the name of a non-terminal symbol
-	 */
-	public Symbol(Object value) { 
-		this(null, UNDEFINED_POSITION, UNDEFINED_POSITION, NO_VALUE);
-		this.value = value;
-	}
-
 	public boolean isTerminal(){
-		return this.type != null;
+		switch (this.type) {
+			case BEGINPROG:
+			case PROGNAME:
+			case ENDLINE:
+			case ENDPROG:
+			case VARNAME:
+			case ASSIGN:
+			case NUMBER:
+			case LPAREN:
+			case RPAREN:
+			case MINUS:
+			case PLUS:
+			case TIMES:
+			case DIVIDE:
+			case IF:
+			case THEN:
+			case ENDIF:
+			case ELSE:
+			case EQ:
+			case GT:
+			case WHILE:
+			case DO:
+			case PRINT:
+			case READ:
+			case EOS:
+				return true;
+			default:
+				return false;
+		}
 	}
 	
 	public boolean isNonTerminal(){
@@ -97,8 +116,19 @@ public class Symbol{
       		return String.format("\\textbf{%s}  %s", type, value); 
 		}
 		else{
-			final String name = this.value != null? this.value.toString() : "null";
-			if(name == "epsilon"){
+			final String upperCaseName = this.type != null? this.type.toString() : "null";
+			String lowerCaseName = upperCaseName.toLowerCase();
+			String name = lowerCaseName.substring(0, 1).toUpperCase() + lowerCaseName.substring(1);
+			int pos = name.indexOf("_");
+			if(pos != -1) {
+				name = name.substring(0,pos);
+			}
+			int pos2 = name.indexOf("prime");
+			if(pos2 != -1) {
+				name = name.substring(0,pos2);
+				name += "'";
+			}
+			if(name.equals("Epsilon")){
 				return String.format("$\\varepsilon$");
 			}
 			else{

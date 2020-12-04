@@ -45,21 +45,21 @@ public class Llvm {
             int i = 0;
 
             while (i < children.size()) {
-                switch (children.get(i).getLabel().getASTString()) {
-                    case "Code":
+                switch (children.get(i).getLabel().getType()) {
+                    case CODE:
                         currentCode = analyze(children.get(i));
                         //value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         //System.out.println(children.get(i).getChildren().size());
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         break;
-                    case "Assign" : 
+                    case ASSIGN : 
                         currentCode = analyze(children.get(i));
                         value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         llvmCode.append(" store i32 %" + String.valueOf((line-1)) + ", i32* %" + value);
                         llvmCode.append("\n");
                         break;
-                    case "Read" : 
+                    case READ : 
                         currentCode = analyze(children.get(i));
                         llvmCode.append(" %" + line + " = call i32 readInt()");
                         llvmCode.append("\n");
@@ -69,13 +69,13 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;
-                    case "Print" :
+                    case PRINT :
                         currentCode = analyze(children.get(i)); 
                         llvmCode.append(currentCode);
                         llvmCode.append(" call void @println(i32 %" + children.get(i).getChildren().get(0).getLabel().getValue().toString() +")");
                         llvmCode.append("\n");
                         break;
-                    case "TIMES" :
+                    case TIMES :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         llvmCode.append(" %" + line + " = mul i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());    // String.valueOf((line-2))   //String.valueOf((line-1))
@@ -83,7 +83,7 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;
-                    case "DIVIDE" :
+                    case DIVIDE :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         llvmCode.append(" %" + line + " = sdiv i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
@@ -91,7 +91,7 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;
-                    case "PLUS" :
+                    case PLUS :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         llvmCode.append(" %" + line + " = add i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
@@ -99,7 +99,7 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;
-                    case "MINUS" :
+                    case MINUS :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         llvmCode.append(" %" + line + " = sub i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
@@ -107,11 +107,11 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;  
-                    case "VARNAME" :
+                    case VARNAME :
                         llvmCode.append(" %" + children.get(i).getLabel().getValue().toString() + " = alloca i32");
                         llvmCode.append("\n");
                         break;
-                    case "NUMBER" :
+                    case NUMBER :
                         llvmCode.append(" %"+ line + " = constant i32 " + children.get(i).getLabel().getValue().toString());
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);

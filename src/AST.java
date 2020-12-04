@@ -8,11 +8,11 @@ public class AST {
     }
 
     public ParseTree getAST() {
-        ParseTree tree1 = cleanTree(parseTree);
-        ParseTree tree2 = buildAST(tree1);
-        ParseTree tree3 = removeExprArith(tree2);
-        ParseTree tree4 = fixAssociativity(tree3);
-        ParseTree ast = finalCleanUp(tree4);
+        ParseTree ast = cleanTree(parseTree);
+        // ParseTree tree2 = buildAST(tree1);
+        // ParseTree tree3 = removeExprArith(tree2);
+        // ParseTree tree4 = fixAssociativity(tree3);
+        // ParseTree ast = finalCleanUp(tree4);
         return ast;
     }
 
@@ -22,15 +22,15 @@ public class AST {
         int i = 0;
         while(i < children.size()) {
           //System.out.println(children.get(i).getLabel().getASTString());
-          switch (children.get(i).getLabel().getASTString()) {
-            case "Instruction":
-            case "Comp":
+          switch (children.get(i).getLabel().getType()) {
+            case INSTRUCTION:
+            case COMP:
               children.set(i, cleanTree(children.get(i).getChildren().get(0)));
               break;
-            case "Code":
-            case "ExprArith'":
-            case "Prod'":
-              if(children.get(i).getChildren().size() == 1 && children.get(i).getChildren().get(0).getLabel().getASTString() == "epsilon") {
+            case CODE:
+            case EXPRARITHPRIME:
+            case PRODPRIME:
+              if(children.get(i).getChildren().size() == 1 && children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.EPSILON) {
                 children.remove(i);
                 i--;
               }
@@ -38,7 +38,7 @@ public class AST {
                 children.set(i, cleanTree(children.get(i)));
               }
               break;
-            case "Atom":
+            case ATOM:
               // System.out.println(children.get(i).getChildren().get(0).getLabel().getValue());
               if(children.get(i).getChildren().size() == 1) {
                 //System.out.println("OK");
@@ -52,7 +52,7 @@ public class AST {
                 children.set(i, cleanTree(children.get(i)));
               }
               break;
-            case "Prod":
+            case PROD:
               if(children.get(i).getChildren().size() == 2 && children.get(i).getChildren().get(1).getChildren().size() == 1) {
                 cleanTree(children.get(i));
                 children.set(i,cleanTree(children.get(i).getChildren().get(0)));
@@ -61,28 +61,28 @@ public class AST {
                 children.set(i, cleanTree(children.get(i)));
               }
               break;
-            case "BEGINPROG":
-            case "PROGNAME":
-            case "EndLine":
-            case "ASSIGN":
-            case "ENDPROG":
-            case "READ":
-            case "PRINT":
-            case "LPAREN":
-            case "WHILE":
-            case "DO":
-            case "ENDWHILE":
-            case "RPAREN":
-            case "IF":
-            case "THEN":
-            case "ENDIF":
+            case BEGINPROG:
+            case PROGNAME:
+            case ENDLINE:
+            case ASSIGN:
+            case ENDPROG:
+            case READ:
+            case PRINT:
+            case LPAREN:
+            case WHILE:
+            case DO:
+            case ENDWHILE:
+            case RPAREN:
+            case IF:
+            case THEN:
+            case ENDIF:
               children.remove(i);
               i--;
               break;   
-            case "ExprArith":
+            case EXPRARITH:
               children.set(i, cleanTree(children.get(i)));
               break;
-            case "IfTail":
+            case IFTAIL:
               if(children.get(i).getChildren().size() == 1) {
                 children.remove(i);
                 i--;

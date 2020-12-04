@@ -57,7 +57,7 @@ public class Parser {
         children.add(endLine());
         children.add(code());
         match(new Symbol(LexicalUnit.ENDPROG), children);
-        Symbol program = new Symbol("Program");
+        Symbol program = new Symbol(LexicalUnit.PROGRAM);
         ParseTree programTree = new ParseTree(program, children);
         return programTree;
     }
@@ -87,14 +87,14 @@ public class Parser {
             case ENDIF:
                 printVerbose(3);
                 addRule(3);
-                Symbol epsilon = new Symbol("epsilon");
+                Symbol epsilon = new Symbol(LexicalUnit.EPSILON);
                 ParseTree epsilonTree = new ParseTree(epsilon);
                 children.add(epsilonTree);
                 break;
             default:
                 // System.out.println("ERROR" + token.toString());
         }
-        Symbol code = new Symbol("Code");
+        Symbol code = new Symbol(LexicalUnit.CODE);
         ParseTree codeTree = new ParseTree(code, children);
         return codeTree;
     }
@@ -135,7 +135,7 @@ public class Parser {
             default:
                 // System.out.println("ERROR");
         }
-        Symbol instruction = new Symbol("Instruction");
+        Symbol instruction = new Symbol(LexicalUnit.INSTRUCTION);
         ParseTree instructionTree = new ParseTree(instruction, children);
         return instructionTree;
     }
@@ -151,7 +151,7 @@ public class Parser {
         match(new Symbol(LexicalUnit.VARNAME), children);
         match(new Symbol(LexicalUnit.ASSIGN), children);
         children.add(exprArith());
-        Symbol assign = new Symbol("Assign");
+        Symbol assign = new Symbol(LexicalUnit.ASSIGN_NT);
         ParseTree assignTree = new ParseTree(assign, children);
         return assignTree;
     }
@@ -166,7 +166,7 @@ public class Parser {
         List<ParseTree> children = new ArrayList<ParseTree>();
         children.add(prod());
         children.add(exprArithPrime());
-        Symbol exprArith = new Symbol("ExprArith");
+        Symbol exprArith = new Symbol(LexicalUnit.EXPRARITH);
         ParseTree exprArithTree = new ParseTree(exprArith, children);
         return exprArithTree;
     }
@@ -199,14 +199,14 @@ public class Parser {
             case EQ:
                 printVerbose(13);
                 addRule(13);
-                Symbol epsilon = new Symbol("epsilon");
+                Symbol epsilon = new Symbol(LexicalUnit.EPSILON);
                 ParseTree epsilonTree = new ParseTree(epsilon);
                 children.add(epsilonTree);
                 break;
             default:
                 break;
         }
-        Symbol exprArithPrime = new Symbol("ExprArith'");
+        Symbol exprArithPrime = new Symbol(LexicalUnit.EXPRARITHPRIME);
         ParseTree exprArithPrimeTree = new ParseTree(exprArithPrime, children);
         return exprArithPrimeTree;
     }
@@ -221,7 +221,7 @@ public class Parser {
         List<ParseTree> children = new ArrayList<ParseTree>();
         children.add(atom());
         children.add(prodPrime());
-        Symbol prod = new Symbol("Prod");
+        Symbol prod = new Symbol(LexicalUnit.PROD);
         ParseTree prodTree = new ParseTree(prod, children);
         return prodTree;
     }
@@ -256,12 +256,12 @@ public class Parser {
             case RPAREN:
                 printVerbose(17);
                 addRule(17);
-                Symbol epsilon = new Symbol("epsilon");
+                Symbol epsilon = new Symbol(LexicalUnit.EPSILON);
                 ParseTree epsilonTree = new ParseTree(epsilon);
                 children.add(epsilonTree);
                 break;
         }
-        Symbol prodPrime = new Symbol("Prod'");
+        Symbol prodPrime = new Symbol(LexicalUnit.PRODPRIME);
         ParseTree prodPrimeTree = new ParseTree(prodPrime, children);
         return prodPrimeTree;
     }
@@ -300,7 +300,7 @@ public class Parser {
             default:
                 // System.out.println("ERROR ATOM");
         }
-        Symbol atom = new Symbol("Atom");
+        Symbol atom = new Symbol(LexicalUnit.ATOM);
         ParseTree tree = new ParseTree(atom, children);
         return tree;
     }
@@ -321,7 +321,7 @@ public class Parser {
         children.add(endLine());
         children.add(code());
         children.add(ifTail());
-        Symbol ifSymbol = new Symbol("If");
+        Symbol ifSymbol = new Symbol(LexicalUnit.IF_NT);
         ParseTree ifTree = new ParseTree(ifSymbol, children);
         return ifTree;
     }
@@ -350,7 +350,7 @@ public class Parser {
             default:
                 // System.out.println("ERROR");
         }
-        Symbol ifTail = new Symbol("IfTail");
+        Symbol ifTail = new Symbol(LexicalUnit.IFTAIL);
         ParseTree ifTailTree = new ParseTree(ifTail, children);
         return ifTailTree;
     }
@@ -366,7 +366,7 @@ public class Parser {
         children.add(exprArith());
         children.add(comp());
         children.add(exprArith());
-        Symbol cond = new Symbol("Cond");
+        Symbol cond = new Symbol(LexicalUnit.COND);
         ParseTree condTree = new ParseTree(cond, children);
         return condTree;
     }
@@ -392,7 +392,7 @@ public class Parser {
             default:
                 // System.out.println("ERROR");
         }
-        Symbol comp = new Symbol("Comp");
+        Symbol comp = new Symbol(LexicalUnit.COMP);
         ParseTree compTree = new ParseTree(comp, children);
         return compTree;
     }
@@ -413,7 +413,7 @@ public class Parser {
         children.add(endLine());
         children.add(code());
         match(new Symbol(LexicalUnit.ENDWHILE), children);
-        Symbol whileSymbol = new Symbol("While");
+        Symbol whileSymbol = new Symbol(LexicalUnit.WHILE_NT);
         ParseTree whileTree = new ParseTree(whileSymbol, children);
         return whileTree;
     }
@@ -430,7 +430,7 @@ public class Parser {
         match(new Symbol(LexicalUnit.LPAREN), children);
         match(new Symbol(LexicalUnit.VARNAME), children);
         match(new Symbol(LexicalUnit.RPAREN), children);
-        Symbol print = new Symbol("Print");
+        Symbol print = new Symbol(LexicalUnit.PRINT_NT);
         ParseTree printTree = new ParseTree(print, children);
         return printTree;
     }
@@ -447,7 +447,7 @@ public class Parser {
         match(new Symbol(LexicalUnit.LPAREN), children);
         match(new Symbol(LexicalUnit.VARNAME), children);
         match(new Symbol(LexicalUnit.RPAREN), children);
-        Symbol read = new Symbol("Read");
+        Symbol read = new Symbol(LexicalUnit.READ_NT);
         ParseTree readTree = new ParseTree(read, children);
         return readTree;
     }
@@ -462,7 +462,7 @@ public class Parser {
         List<ParseTree> children = new ArrayList<ParseTree>();
         match(new Symbol(LexicalUnit.ENDLINE), children);
         children.add(endLinePrime());
-        Symbol endLine = new Symbol("EndLine");
+        Symbol endLine = new Symbol(LexicalUnit.ENDLINE_NT);
         ParseTree endLineTree = new ParseTree(endLine, children);
         return endLineTree;
     }
@@ -492,14 +492,14 @@ public class Parser {
             case ENDWHILE:
                 printVerbose(33);
                 addRule(33);
-                Symbol epsilon = new Symbol("epsilon");
+                Symbol epsilon = new Symbol(LexicalUnit.EPSILON);
                 ParseTree epsilonTree = new ParseTree(epsilon);
                 children.add(epsilonTree);
                 break;
             default:
                 // System.out.println("ERROR");
         }
-        Symbol endLinePrime = new Symbol("EndLine'");
+        Symbol endLinePrime = new Symbol(LexicalUnit.ENDLINEPRIME);
         ParseTree endLinePrimeTree = new ParseTree(endLinePrime, children);
         return endLinePrimeTree;
     }
