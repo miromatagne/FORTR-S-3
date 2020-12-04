@@ -11,7 +11,8 @@ public class AST {
         ParseTree tree1 = cleanTree(parseTree);
         ParseTree tree2 = buildAST(tree1);
         ParseTree tree3 = removeExprArith(tree2);
-        ParseTree ast = fixAssociativity(tree3);
+        ParseTree tree4 = fixAssociativity(tree3);
+        ParseTree ast = finalCleanUp(tree4);
         return ast;
     }
 
@@ -23,6 +24,7 @@ public class AST {
           //System.out.println(children.get(i).getLabel().getASTString());
           switch (children.get(i).getLabel().getASTString()) {
             case "Instruction":
+            case "Comp":
               children.set(i, cleanTree(children.get(i).getChildren().get(0)));
               break;
             case "Code":
@@ -43,8 +45,8 @@ public class AST {
                 children.set(i,cleanTree(children.get(i).getChildren().get(0)));
               }
               else if(children.get(i).getChildren().size() == 3) {
+                System.out.println("OK");
                 children.set(i,cleanTree(children.get(i).getChildren().get(1)));
-                i -= 2;
               }
               else {
                 children.set(i, cleanTree(children.get(i)));
@@ -67,13 +69,27 @@ public class AST {
             case "READ":
             case "PRINT":
             case "LPAREN":
+            case "WHILE":
+            case "DO":
+            case "ENDWHILE":
             case "RPAREN":
+            case "IF":
+            case "THEN":
+            case "ENDIF":
               children.remove(i);
               i--;
               break;   
             case "ExprArith":
               children.set(i, cleanTree(children.get(i)));
               break;
+            case "IfTail":
+              if(children.get(i).getChildren().size() == 1) {
+                children.remove(i);
+                i--;
+              }
+              else {
+                children.set(i,cleanTree(children.get(i).getChildren().get(2)));
+              }
             default:
               // System.out.println("ok");
               children.set(i, cleanTree(children.get(i)));
@@ -141,8 +157,11 @@ public class AST {
             case "ExprArith":
             case "Prod'":
             case "ExprArith'":
-              if(children.get(i).getChildren().size() == 1) {
+              if(children.get(i).getChildren().size() == 1 && (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.NUMBER || children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) ) {
                 children.set(i,removeExprArith(children.get(i).getChildren().get(0)));
+              }
+              else {
+                children.set(i, removeExprArith(children.get(i)));
               }
               break;
             default:
@@ -222,5 +241,31 @@ public class AST {
           currentChildren = c;
         }
         return newParseTree;
+      }
+
+      private static ParseTree finalCleanUp(ParseTree parseTree) {
+        List<ParseTree> children = parseTree.getChildren();
+        int i = 0;
+        while(i < children.size()) {
+          switch (children.get(i).getLabel().getASTString()) {
+            case "ExprArith'":
+            case "ExprArith":
+            case "Prod":
+            case "Prod'":
+                if(children.get(i).getChildren().size() == 1) {
+                    children.set(i,finalCleanUp(children.get(i).getChildren().get(0)));
+                }
+                else {
+                    children.set(i, finalCleanUp(children.get(i)));
+                }
+              break;
+            default:
+              children.set(i, finalCleanUp(children.get(i)));
+              break;
+          }
+          i++;
+        }
+        parseTree.setChildren(children);
+        return parseTree;
       }
 }
