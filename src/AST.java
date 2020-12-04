@@ -8,11 +8,11 @@ public class AST {
     }
 
     public ParseTree getAST() {
-        ParseTree ast = cleanTree(parseTree);
-        // ParseTree tree2 = buildAST(tree1);
-        // ParseTree tree3 = removeExprArith(tree2);
-        // ParseTree tree4 = fixAssociativity(tree3);
-        // ParseTree ast = finalCleanUp(tree4);
+        ParseTree tree1 = cleanTree(parseTree);
+        ParseTree tree2 = buildAST(tree1);
+        ParseTree tree3 = removeExprArith(tree2);
+        ParseTree tree4 = fixAssociativity(tree3);
+        ParseTree ast = finalCleanUp(tree4);
         return ast;
     }
 
@@ -21,7 +21,6 @@ public class AST {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
-          //System.out.println(children.get(i).getLabel().getASTString());
           switch (children.get(i).getLabel().getType()) {
             case INSTRUCTION:
             case COMP:
@@ -63,7 +62,7 @@ public class AST {
               break;
             case BEGINPROG:
             case PROGNAME:
-            case ENDLINE:
+            case ENDLINE_NT:
             case ASSIGN:
             case ENDPROG:
             case READ:
@@ -105,15 +104,15 @@ public class AST {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
-          switch (children.get(i).getLabel().getASTString()) {
-            case "Atom":
+          switch (children.get(i).getLabel().getType()) {
+            case ATOM:
               if(children.get(i).getChildren().size() == 2) {
                 children.get(i).getChildren().get(1).getLabel().setValue("-" + children.get(i).getChildren().get(1).getLabel().getValue());
                 children.set(i,buildAST(children.get(i).getChildren().get(1)));
               }
               break;
-            case "ExprArith":
-            case "Prod":
+            case EXPRARITH:
+            case PROD:
               if(children.get(i).getChildren().size() != 1){
                 children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
               }
@@ -121,8 +120,8 @@ public class AST {
                 children.set(i, buildAST(children.get(i)));
               }
               break;
-            case "ExprArith'":
-            case "Prod'":
+            case EXPRARITHPRIME:
+            case PRODPRIME:
               if(children.get(i).getChildren().size() == 3) {
                 children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
               }
@@ -130,10 +129,10 @@ public class AST {
                 children.set(i, buildAST(children.get(i)));
               }
               break;
-            case "PLUS":
-            case "TIMES":
-            case "DIVIDE":
-            case "MINUS":
+            case PLUS:
+            case TIMES:
+            case DIVIDE:
+            case MINUS:
               children.remove(i);
               i--;
               break;
@@ -152,11 +151,11 @@ public class AST {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
-          switch (children.get(i).getLabel().getASTString()) {
-            case "Prod":
-            case "ExprArith":
-            case "Prod'":
-            case "ExprArith'":
+          switch (children.get(i).getLabel().getType()) {
+            case PROD:
+            case EXPRARITH:
+            case PRODPRIME:
+            case EXPRARITHPRIME:
               if(children.get(i).getChildren().size() == 1 && (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.NUMBER || children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) ) {
                 children.set(i,removeExprArith(children.get(i).getChildren().get(0)));
               }
@@ -179,15 +178,15 @@ public class AST {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
-          switch (children.get(i).getLabel().getASTString()) {
-            case "DIVIDE":
-            case "TIMES":
-              children.set(i,getChildParseTree(i,children,"DIVIDE","TIMES"));
+          switch (children.get(i).getLabel().getType()) {
+            case DIVIDE:
+            case TIMES:
+              children.set(i,getChildParseTree(i,children,LexicalUnit.DIVIDE,LexicalUnit.TIMES));
               break;
-            case "PLUS":
-            case "MINUS":
+            case PLUS:
+            case MINUS:
                 if(children.get(i).getChildren().size() != 0) {
-                    children.set(i,getChildParseTree(i,children,"PLUS","MINUS"));
+                    children.set(i,getChildParseTree(i,children,LexicalUnit.PLUS,LexicalUnit.MINUS));
                 }
                 else {
                     children.set(i, fixAssociativity(children.get(i)));
@@ -203,19 +202,17 @@ public class AST {
         return parseTree;
       }
     
-      private static ParseTree getChildParseTree(int i, List<ParseTree> children, String op1, String op2 ) {
+      private static ParseTree getChildParseTree(int i, List<ParseTree> children, LexicalUnit op1, LexicalUnit op2 ) {
         List<ParseTree> consecutive = new ArrayList<ParseTree>();
         ParseTree child = children.get(i).getChildren().get(1);
         consecutive.add(children.get(i));
-        while(child.getLabel().getASTString() == op1 || child.getLabel().getASTString() == op2 ) {
+        while(child.getLabel().getType() == op1 || child.getLabel().getType() == op2 ) {
           consecutive.add(child);
           child = child.getChildren().get(1);
         }
         if(consecutive.size() == 1) {
-          // System.out.println("SIZE 1" + child.getLabel().getASTString());
           return fixAssociativity(children.get(i));
         }
-        System.out.println("SIZE " + consecutive.size() + " " + children.get(i).getChildren().get(1).getChildren().get(1).getLabel().getASTString());
         List<ParseTree> flatten = new ArrayList<ParseTree>();
         for(int b=0;b < consecutive.size();b++) {
           flatten.add(consecutive.get(b).getChildren().get(0));
@@ -247,11 +244,11 @@ public class AST {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
-          switch (children.get(i).getLabel().getASTString()) {
-            case "ExprArith'":
-            case "ExprArith":
-            case "Prod":
-            case "Prod'":
+          switch (children.get(i).getLabel().getType()) {
+            case EXPRARITHPRIME:
+            case EXPRARITH:
+            case PROD:
+            case PRODPRIME:
                 if(children.get(i).getChildren().size() == 1) {
                     children.set(i,finalCleanUp(children.get(i).getChildren().get(0)));
                 }
