@@ -1,9 +1,11 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Llvm {
     private static ParseTree tree;
     private static String llvmCode;
     private static int line = 0;
+    private static List<Object> values = new ArrayList<Object>();
     private static String read = "@.strR = private unnamed_addr constant [3 x i8] c\"%d\\00\", align 1" + "\n" + 
         "define i32 @readInt() #0 {" + "\n" + 
         " %1 = alloca i32, align 4" + "\n" +
@@ -33,7 +35,6 @@ public class Llvm {
     }
 
     public String getLlvm() {
-        
         return llvmCode;
     }
 
@@ -44,22 +45,25 @@ public class Llvm {
             String value = null;
             int i = 0;
 
+            //System.out.println("size : " + children.size());
+            //System.out.println(children.get(i).getLabel().getType());
+
             while (i < children.size()) {
                 switch (children.get(i).getLabel().getType()) {
                     case CODE:
                         currentCode = analyze(children.get(i));
                         //value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
-                        //System.out.println(children.get(i).getChildren().size());
+                        
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         break;
-                    case ASSIGN : 
+                    case ASSIGN_NT : 
                         currentCode = analyze(children.get(i));
                         value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         llvmCode.append(" store i32 %" + String.valueOf((line-1)) + ", i32* %" + value);
                         llvmCode.append("\n");
                         break;
-                    case READ : 
+                    case READ_NT : 
                         currentCode = analyze(children.get(i));
                         llvmCode.append(" %" + line + " = call i32 readInt()");
                         llvmCode.append("\n");
@@ -69,7 +73,7 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;
-                    case PRINT :
+                    case PRINT_NT :
                         currentCode = analyze(children.get(i)); 
                         llvmCode.append(currentCode);
                         llvmCode.append(" call void @println(i32 %" + children.get(i).getChildren().get(0).getLabel().getValue().toString() +")");
@@ -78,7 +82,19 @@ public class Llvm {
                     case TIMES :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = mul i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());    // String.valueOf((line-2))   //String.valueOf((line-1))
+                        llvmCode.append(" %" + line + " = mul i32 %");
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(children.get(i).getChildren().get(0).getLabel().getValue());
+                        }
+                        else {
+                            llvmCode.append(children.get(i).getChildren().get(0).getCounter()); 
+                        }
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                        }
+                        else {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getCounter()); 
+                        }
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
@@ -86,7 +102,19 @@ public class Llvm {
                     case DIVIDE :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = sdiv i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
+                        llvmCode.append(" %" + line + " = sdiv i32 %"); 
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(children.get(i).getChildren().get(0).getLabel().getValue());
+                        }
+                        else {
+                            llvmCode.append(children.get(i).getChildren().get(0).getCounter()); 
+                        }
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                        }
+                        else {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getCounter()); 
+                        }
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
@@ -108,8 +136,11 @@ public class Llvm {
                         line++;
                         break;  
                     case VARNAME :
-                        llvmCode.append(" %" + children.get(i).getLabel().getValue().toString() + " = alloca i32");
-                        llvmCode.append("\n");
+                        if (!values.contains(children.get(i).getLabel().getValue())) {
+                            llvmCode.append(" %" + children.get(i).getLabel().getValue().toString() + " = alloca i32");
+                            llvmCode.append("\n");
+                            values.add(children.get(i).getLabel().getValue());
+                        }
                         break;
                     case NUMBER :
                         llvmCode.append(" %"+ line + " = constant i32 " + children.get(i).getLabel().getValue().toString());
