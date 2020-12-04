@@ -51,9 +51,9 @@ public class Main {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      if (rules != null) {
-        printRules(rules);
-      }
+      // if (rules != null) {
+      //   printRules(rules);
+      // }
     }
   }
 

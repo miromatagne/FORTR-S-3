@@ -1,4 +1,5 @@
 BEGINPROG Atom
-    READ(a)
-    PRINT(b)
+    WHILE(a > 0) DO
+        a =: a + 1
+    ENDWHILE
 ENDPROG

@@ -46,7 +46,7 @@ public class Llvm {
 
             while (i < children.size()) {
                 switch (children.get(i).getLabel().getASTString()) {
-                    case "Code" :
+                    case "Code":
                         currentCode = analyze(children.get(i));
                         //value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         //System.out.println(children.get(i).getChildren().size());
