@@ -122,7 +122,19 @@ public class Llvm {
                     case PLUS :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = add i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
+                        llvmCode.append(" %" + line + " = add i32 %");
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(children.get(i).getChildren().get(0).getLabel().getValue());
+                        }
+                        else {
+                            llvmCode.append(children.get(i).getChildren().get(0).getCounter()); 
+                        }
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                        }
+                        else {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getCounter()); 
+                        }
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
@@ -130,7 +142,19 @@ public class Llvm {
                     case MINUS :
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = sub i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
+                        llvmCode.append(" %" + line + " = sub i32 %");
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(children.get(i).getChildren().get(0).getLabel().getValue());
+                        }
+                        else {
+                            llvmCode.append(children.get(i).getChildren().get(0).getCounter()); 
+                        }
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME) {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                        }
+                        else {
+                            llvmCode.append(", %" + children.get(i).getChildren().get(1).getCounter()); 
+                        }
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
