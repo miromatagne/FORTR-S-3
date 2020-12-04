@@ -250,6 +250,7 @@ public class AST {
             case PROD:
             case PRODPRIME:
                 if(children.get(i).getChildren().size() == 1) {
+                    finalCleanUp(children.get(i));
                     children.set(i,finalCleanUp(children.get(i).getChildren().get(0)));
                 }
                 else {
