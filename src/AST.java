@@ -9,7 +9,7 @@ public class AST {
 
     public ParseTree getAST() {
         ParseTree tree1 = cleanTree(parseTree);
-        ParseTree tree2 = buildAST(tree1);
+        ParseTree tree2 = setUpOperators(tree1);
         ParseTree tree3 = removeExprArith(tree2);
         ParseTree tree4 = fixAssociativity(tree3);
         ParseTree ast = finalCleanUp(tree4);
@@ -17,15 +17,16 @@ public class AST {
     }
 
     private static ParseTree cleanTree(ParseTree parseTree) {
-        // ParseTree ast = new ParseTree(new Symbol("Program"));
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
           switch (children.get(i).getLabel().getType()) {
+            //Replace unnecessary intermediate nodes by thir children
             case INSTRUCTION:
             case COMP:
               children.set(i, cleanTree(children.get(i).getChildren().get(0)));
               break;
+            //Remove nodes that give epsilon, as they are not useful
             case CODE:
             case EXPRARITHPRIME:
             case PRODPRIME:
@@ -38,13 +39,14 @@ public class AST {
               }
               break;
             case ATOM:
-              // System.out.println(children.get(i).getChildren().get(0).getLabel().getValue());
+              //If the Atom simply has a VarName or a Number as a child, we replace
+              //the Atom by is child
               if(children.get(i).getChildren().size() == 1) {
-                //System.out.println("OK");
                 children.set(i,cleanTree(children.get(i).getChildren().get(0)));
               }
+              //If the Atom has 3 children, it means rule 19 is used (with the parenthesis),
+              //so the parenthesis are ignored and only the second child is kept
               else if(children.get(i).getChildren().size() == 3) {
-                System.out.println("OK");
                 children.set(i,cleanTree(children.get(i).getChildren().get(1)));
               }
               else {
@@ -52,6 +54,8 @@ public class AST {
               }
               break;
             case PROD:
+              //If a Prod gives just an Atom, that itself gives just a VarName or a Number,
+              //the Prod node is removed to the profit of that VarName of Number
               if(children.get(i).getChildren().size() == 2 && children.get(i).getChildren().get(1).getChildren().size() == 1) {
                 cleanTree(children.get(i));
                 children.set(i,cleanTree(children.get(i).getChildren().get(0)));
@@ -60,6 +64,7 @@ public class AST {
                 children.set(i, cleanTree(children.get(i)));
               }
               break;
+            //All the following unncesessary terminals are removed
             case BEGINPROG:
             case PROGNAME:
             case ENDLINE_NT:
@@ -78,19 +83,21 @@ public class AST {
               children.remove(i);
               i--;
               break;   
-            case EXPRARITH:
-              children.set(i, cleanTree(children.get(i)));
-              break;
             case IFTAIL:
+              //If the IfTail node has only one child, it means rule 23 was used and
+              //that this child is just ENDIF, so we simply remove the IfTail as it is
+              //useless.
               if(children.get(i).getChildren().size() == 1) {
                 children.remove(i);
                 i--;
               }
+              //Else, it means the IfTail contains an ELSE (rule 24), and therefore we
+              //just need to keep the code corresponding to the ELSE statement, which is 
+              //why we keep only the second child.
               else {
                 children.set(i,cleanTree(children.get(i).getChildren().get(2)));
               }
             default:
-              // System.out.println("ok");
               children.set(i, cleanTree(children.get(i)));
               break;
           }
@@ -100,35 +107,42 @@ public class AST {
         return parseTree;
       }
     
-      private static ParseTree buildAST(ParseTree parseTree) {
+      private static ParseTree setUpOperators(ParseTree parseTree) {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
         while(i < children.size()) {
           switch (children.get(i).getLabel().getType()) {
             case ATOM:
+              //If Atom has 2 children, it means it contains an unary minus, which
+              //is why we join the minus with the number associated.
               if(children.get(i).getChildren().size() == 2) {
                 children.get(i).getChildren().get(1).getLabel().setValue("-" + children.get(i).getChildren().get(1).getLabel().getValue());
-                children.set(i,buildAST(children.get(i).getChildren().get(1)));
+                children.set(i,setUpOperators(children.get(i).getChildren().get(1)));
               }
               break;
+            //For every ExprArith and Prod found, we replace them by the operator
+            //they correspond to.
             case EXPRARITH:
             case PROD:
               if(children.get(i).getChildren().size() != 1){
-                children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
+                children.set(i, setUpOperators(new ParseTree(new Symbol(children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(1).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
               }
               else {
-                children.set(i, buildAST(children.get(i)));
+                children.set(i, setUpOperators(children.get(i)));
               }
               break;
+            //For every ExprArith' and Prod' found, we replace them by the operator
+            //they correspond to.
             case EXPRARITHPRIME:
             case PRODPRIME:
               if(children.get(i).getChildren().size() == 3) {
-                children.set(i, buildAST(new ParseTree(new Symbol(children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
+                children.set(i, setUpOperators(new ParseTree(new Symbol(children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getType(),children.get(i).getChildren().get(2).getChildren().get(0).getLabel().getValue()),children.get(i).getChildren())));
               }
               else {
-                children.set(i, buildAST(children.get(i)));
+                children.set(i, setUpOperators(children.get(i)));
               }
               break;
+            //The remaining terminals corresponding to the operators are removed
             case PLUS:
             case TIMES:
             case DIVIDE:
@@ -137,8 +151,7 @@ public class AST {
               i--;
               break;
             default:
-              // System.out.println("ok");
-              children.set(i, buildAST(children.get(i)));
+              children.set(i, setUpOperators(children.get(i)));
               break;
           }
           i++;
@@ -164,7 +177,6 @@ public class AST {
               }
               break;
             default:
-              // System.out.println("ok");
               children.set(i, removeExprArith(children.get(i)));
               break;
           }
@@ -179,10 +191,16 @@ public class AST {
         int i = 0;
         while(i < children.size()) {
           switch (children.get(i).getLabel().getType()) {
+            //Whenever a DIVIDES or a TIMES is found, we call getChildParseTree,
+            //which will fix the associativity of the successive multiplications
+            //and divisions.
             case DIVIDE:
             case TIMES:
               children.set(i,getChildParseTree(i,children,LexicalUnit.DIVIDE,LexicalUnit.TIMES));
               break;
+            //Whenever a PLUS or a MINUS is found, we call getChildParseTree,
+            //which will fix the associativity of the successive additions
+            //and substractions.
             case PLUS:
             case MINUS:
                 if(children.get(i).getChildren().size() != 0) {
@@ -206,6 +224,8 @@ public class AST {
         List<ParseTree> consecutive = new ArrayList<ParseTree>();
         ParseTree child = children.get(i).getChildren().get(1);
         consecutive.add(children.get(i));
+        //Create a lost of all consecutive nodes corresponding to the operators specified
+        //(division and multiplication or addition and substraction)
         while(child.getLabel().getType() == op1 || child.getLabel().getType() == op2 ) {
           consecutive.add(child);
           child = child.getChildren().get(1);
@@ -213,6 +233,9 @@ public class AST {
         if(consecutive.size() == 1) {
           return fixAssociativity(children.get(i));
         }
+        //The previous list obtained is flattened, and the numbers
+        // or variables used in these operations are also added, to 
+        //have all the complete successive operations on a single level
         List<ParseTree> flatten = new ArrayList<ParseTree>();
         for(int b=0;b < consecutive.size();b++) {
           flatten.add(consecutive.get(b).getChildren().get(0));
@@ -226,6 +249,8 @@ public class AST {
         chdn.add(fixAssociativity(flatten.get(flatten.size() -1)));
         ParseTree newParseTree = new ParseTree(s,chdn);
         List<ParseTree> currentChildren = chdn;
+        //The flattened list is parsed in a specific order to place the nodes in
+        //the tree respecting the associativity rules
         for(int b=flatten.size()-4;b>=0;b=b-2) {
           Symbol s2 = flatten.get(b).getLabel();
           List<ParseTree> c = new ArrayList<ParseTree>();
@@ -245,6 +270,8 @@ public class AST {
         int i = 0;
         while(i < children.size()) {
           switch (children.get(i).getLabel().getType()) {
+            //Reoval of the existing ExprArith, ExprArith', Prod and Prod'.
+            //These were still present because of the parenthesis.
             case EXPRARITHPRIME:
             case EXPRARITH:
             case PROD:
