@@ -3,10 +3,18 @@ import java.util.List;
 public class AST {
     ParseTree parseTree;
     
+    /**
+     * Constructor, stores the ParseTree to be converted into ad AST as attribute
+     * @param parseTree ParseTree coming from the Parser
+     */
     public AST(ParseTree parseTree) {
         this.parseTree = parseTree;
     }
 
+    /**
+     * Function called to transform the parseTree into an AST.
+     * @return AST
+     */
     public ParseTree getAST() {
         ParseTree tree1 = cleanTree(parseTree);
         ParseTree tree2 = setUpOperators(tree1);
@@ -16,6 +24,12 @@ public class AST {
         return ast;
     }
 
+    /**
+     * Replaces unnecessary non-leaf nodes by their children (ex : Instruction),
+     * and removes a lot of unnecessary terminals
+     * @param parseTree input parseTree
+     * @return a cleaned up parse tree
+     */
     private static ParseTree cleanTree(ParseTree parseTree) {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
@@ -107,6 +121,13 @@ public class AST {
         return parseTree;
       }
     
+      /**
+       * Puts the operators correctly on the AST. Indeed, the operators in our grammar
+       * are not represented as non-terminal nodes, they simply appear as children of
+       * ExprArith,Prod,...
+       * @param parseTree input Parse Tree
+       * @return Parse Tree with operators in place
+       */
       private static ParseTree setUpOperators(ParseTree parseTree) {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
@@ -160,6 +181,11 @@ public class AST {
         return parseTree;
       }
     
+      /**
+       * Removes all the unnecessary ExprArith,ExprArith',Prod and Prod' nodes
+       * @param parseTree input ParseTree
+       * @return ParseTree without unnecessary nodes
+       */
       private static ParseTree removeExprArith(ParseTree parseTree) {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
@@ -186,6 +212,13 @@ public class AST {
         return parseTree;
       }
     
+      /**
+       * Fixes the associativity of the operators. Indeed, the tree is for the moment
+       * build such as right associativity is performes, and this need to be changed
+       * to left associativity
+       * @param parseTree input ParseTree
+       * @return ParseTree with all operators respecting left associativity
+       */
       private static ParseTree fixAssociativity(ParseTree parseTree) {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
@@ -220,6 +253,16 @@ public class AST {
         return parseTree;
       }
     
+      /**
+       * Helper function that computes a list of all successive operations and returns
+       * a ParseTree with left associativity respected. This function can be called for
+       * additions and substractions, of for multiplications and divisions.
+       * @param i index of the child where the first operator concerned is present in the original ParseTree
+       * @param children children of the input ParseTree
+       * @param op1 first operator to consider
+       * @param op2 second operator to consider
+       * @return ParseTree with left associativity
+       */
       private static ParseTree getChildParseTree(int i, List<ParseTree> children, LexicalUnit op1, LexicalUnit op2 ) {
         List<ParseTree> consecutive = new ArrayList<ParseTree>();
         ParseTree child = children.get(i).getChildren().get(1);
@@ -265,6 +308,12 @@ public class AST {
         return newParseTree;
       }
 
+      /**
+       * Removes the final ExprArith, ExprArith', Prod and Prod' nodes that are left,
+       * due to the parenthesis present in certain equations.
+       * @param parseTree
+       * @return
+       */
       private static ParseTree finalCleanUp(ParseTree parseTree) {
         List<ParseTree> children = parseTree.getChildren();
         int i = 0;
