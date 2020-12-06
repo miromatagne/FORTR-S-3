@@ -92,6 +92,7 @@ public class AST {
             case ENDWHILE:
             case RPAREN:
             case IF:
+            case ELSE:
             case THEN:
             case ENDIF:
               children.remove(i);
@@ -105,11 +106,9 @@ public class AST {
                 children.remove(i);
                 i--;
               }
-              //Else, it means the IfTail contains an ELSE (rule 24), and therefore we
-              //just need to keep the code corresponding to the ELSE statement, which is 
-              //why we keep only the second child.
+              //Else, it means the IfTail contains an ELSE (rule 24)
               else {
-                children.set(i,cleanTree(children.get(i).getChildren().get(2)));
+                children.set(i,cleanTree(children.get(i)));
               }
             default:
               children.set(i, cleanTree(children.get(i)));
