@@ -5,7 +5,7 @@
 
 \begin{document}
 
-\begin{forest}for tree={rectangle, draw, l sep=20pt}[{\textbf{\textless Program\textgreater}} [{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  a} ][{\textbf{NUMBER}  1} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  b} ][{\textbf{NUMBER}  2} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  b} ][{\textbf{DIVIDE}  /} [{\textbf{NUMBER}  3} ][{\textbf{DIVIDE}  /} [{\textbf{VARNAME}  b} ][{\textbf{VARNAME}  a} ]]]]]]]];
+\begin{forest}for tree={rectangle, draw, l sep=20pt}[{\textbf{\textless Program\textgreater}} [{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  a} ][{\textbf{NUMBER}  1} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless If\textgreater}} [{\textbf{\textless Cond\textgreater}} [{\textbf{VARNAME}  a} ][{GT \textgreater} ][{\textbf{NUMBER}  0} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  a} ][{\textbf{NUMBER}  3} ]]]]]]];
 \end{forest}
 
 \end{document}

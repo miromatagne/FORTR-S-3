@@ -1,16 +1,18 @@
 define i32 @main() {
   entry:
-  %a = alloca i32 
-  %0 = constant i32 1
-  store i32 %0, i32* %a
-  %b = alloca i32
-  %1 = constant i32 2
-  store i32 %1, i32* %b
-  %2 = constant i32 3
-  %3 = sdiv i32 %b, %a
-  %4 = sdiv i32 %2, %3
-  store i32 %4, i32* %b
-  ret i32 0
+    %a = alloca i32 
+    %0 = constant i32 1
+    store i32 %0, i32* %a
+    %1 = load i32, i32 %a 
+    %2 = constant i32 0
+    %3 = icmp sgt i32 %1, %2
+    br i1 %3, label %greater, label %lowerOrEquals
+  greater:
+    %4 = constant i32 3
+    store i32 %4, i32* %a
+    br label %lowerOrEquals
+  lowerOrEquals:
+    ret i32 0
 }
 
-; a:= 1  a := 2
+; IF  INDENTER TOUT A LINTERIEUR DE ENTRY

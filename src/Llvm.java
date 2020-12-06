@@ -172,6 +172,9 @@ public class Llvm {
                         children.get(i).setCounter(line);
                         line++;
                         break;
+                    case IF_NT :
+                        currentCode = analyze(children.get(i));
+                        break;
                     default :
                         break;
                 }
@@ -185,8 +188,8 @@ public class Llvm {
     private String toLlvm() {
         String main = "define i32 @main() {" + "\n" +
         " entry:" + "\n" + 
-        analyze(this.tree) + 
-        " ret i32 0" + "\n" +
+        analyze(this.tree).indent(1) + 
+        "  ret i32 0" + "\n" +
         "}";
         return /*this.read + "\n" + this.print + "\n" +*/ main;
     }
