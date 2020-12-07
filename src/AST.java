@@ -318,7 +318,7 @@ public class AST {
         int i = 0;
         while(i < children.size()) {
           switch (children.get(i).getLabel().getType()) {
-            //Reoval of the existing ExprArith, ExprArith', Prod and Prod'.
+            //Removal of the existing ExprArith, ExprArith', Prod and Prod'.
             //These were still present because of the parenthesis.
             case EXPRARITHPRIME:
             case EXPRARITH:
