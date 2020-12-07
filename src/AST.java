@@ -21,7 +21,7 @@ public class AST {
         ParseTree tree3 = removeExprArith(tree2);
         ParseTree tree4 = fixAssociativity(tree3);
         ParseTree ast = finalCleanUp(tree4);
-        return ast;
+        return parseTree;
     }
 
     /**
@@ -102,12 +102,14 @@ public class AST {
               //If the IfTail node has only one child, it means rule 23 was used and
               //that this child is just ENDIF, so we simply remove the IfTail as it is
               //useless.
-              if(children.get(i).getChildren().size() == 1) {
+              if(children.get(i).getChildren().size() == 1 && children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.ENDIF) {
+                System.out.println("OK");
                 children.remove(i);
                 i--;
               }
               //Else, it means the IfTail contains an ELSE (rule 24)
               else {
+                System.out.println("OK2");
                 children.set(i,cleanTree(children.get(i)));
               }
             default:

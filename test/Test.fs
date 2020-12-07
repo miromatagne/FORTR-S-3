@@ -5,8 +5,6 @@ BEGINPROG Atom
     ELSE 
         IF(a > 7) THEN
             b:=1
-        ELSE
-            a := 10
         ENDIF    
     ENDIF
     
