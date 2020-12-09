@@ -1,0 +1,35 @@
+define i32 @main() {
+  entry:
+    %a = alloca i32
+    %0 = alloca i32
+    store i32 10, i32* %0
+    %1 = load i32, i32* %0
+    store i32 %1, i32* %a
+    %2 = load i32, i32* %a
+    %3 = alloca i32
+    store i32 0, i32* %3
+    %4 = load i32, i32* %3
+    %5 = icmp sgt i32 %2, %4
+    br i1 %5, label %true1, label %exit1
+  true1:
+    br label %while1
+  while1:
+    %6 = load i32, i32* %a
+    %7 = alloca i32
+    store i32 1, i32* %7
+    %8 = load i32, i32* %7
+    %9 = icmp sgt i32 %6, %8
+    br i1 %9, label %wtrue1, label %wexit1
+  wtrue1:
+    %10 = load i32, i32* %a
+    %11 = alloca i32
+    store i32 1, i32* %11
+    %12 = load i32, i32* %11
+    %13 = sub i32 %10, %12
+    store i32 %13, i32* %a
+    br label %while1
+  wexit1:
+    br label %exit1
+  exit1:
+    ret i32 0
+}

@@ -5,7 +5,8 @@ public class Llvm {
     private static ParseTree tree;
     private static String llvmCode;
     private static int line = 0;
-    private static int ifCounter = 1;
+    private static int ifCounter = 0;
+    private static int wCounter = 0;
     private static List<Object> values = new ArrayList<Object>();
     private static String read = "@.strR = private unnamed_addr constant [3 x i8] c\"%d\\00\", align 1" + "\n" + 
         "define i32 @readInt() #0 {" + "\n" + 
@@ -77,7 +78,8 @@ public class Llvm {
                     case PRINT_NT :
                         currentCode = analyze(children.get(i)); 
                         llvmCode.append(currentCode);
-                        llvmCode.append(" call void @println(i32 %" + children.get(i).getChildren().get(0).getLabel().getValue().toString() +")");
+                        llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());  //.toString()
+                        llvmCode.append(" call void @println(i32 %" + line +")");  
                         llvmCode.append("\n");
                         break;
                     case TIMES :
@@ -87,7 +89,7 @@ public class Llvm {
                         }
                         // Load more than once the same variable? check if it is a problem
                         if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(0).getLabel().getValue());
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
@@ -96,7 +98,7 @@ public class Llvm {
                         if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(1).setCounter(line);
                             line++;
@@ -117,7 +119,7 @@ public class Llvm {
                         }
 
                         if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(0).getLabel().getValue());
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
@@ -126,7 +128,7 @@ public class Llvm {
                         if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(1).setCounter(line);
                             line++;
@@ -148,7 +150,7 @@ public class Llvm {
                         }
 
                         if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(0).getLabel().getValue());
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
@@ -157,7 +159,7 @@ public class Llvm {
                         if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(1).setCounter(line);
                             line++;
@@ -179,7 +181,7 @@ public class Llvm {
                         }
 
                         if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(0).getLabel().getValue());
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
@@ -188,7 +190,7 @@ public class Llvm {
                         if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
-                            llvmCode.append(" %" + line + " load i32, i32* " + children.get(i).getChildren().get(1).getLabel().getValue()); 
+                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
                             llvmCode.append("\n");
                             children.get(i).getChildren().get(1).setCounter(line);
                             line++;
@@ -199,7 +201,7 @@ public class Llvm {
                             llvmCode.append(currentCode);
                         }
 
-                        llvmCode.append(" %" + line + " = sdiv i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
+                        llvmCode.append(" %" + line + " = sub i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
                         llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
@@ -212,29 +214,63 @@ public class Llvm {
                         }
                         break;
                     case NUMBER :
-                        llvmCode.append(" %"+ line + " = constant i32 " + children.get(i).getLabel().getValue().toString());
-                        llvmCode.append("\n");
+                        llvmCode.append(" %" + line + " = alloca i32\n");
+                        llvmCode.append(" store i32 " + children.get(i).getLabel().getValue() + ", i32* %" + line + "\n");  //.toString()
+                        line++;
+                        llvmCode.append(" %" + line + " = load i32, i32* %" + (line-1) + "\n");
+                        //llvmCode.append("\n");
                         children.get(i).setCounter(line);
                         line++;
                         break;
                     case IF_NT :
+                        ifCounter++;
+                        children.get(i).setIfCounter(ifCounter); /////
+                        if (children.get(i).getChildren().get(children.get(i).getChildren().size()-1).getLabel().getType() == LexicalUnit.IFTAIL) {
+                            children.get(i).getChildren().get(children.get(i).getChildren().size()-1).setIfCounter(ifCounter);;
+                        }
+                        children.get(i).getChildren().get(0).setIfCounter(ifCounter);  // So cond can detect if he is a child of IF_NT 
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        if (children.get(i).getChildren().get(0).getIfCounter() == 1) {
+
+                        if (children.get(i).getIfCounter() == 1) {
                             if (children.get(i).getChildren().get(children.get(i).getChildren().size() - 1).getLabel().getType() != LexicalUnit.IFTAIL) {
-                                llvmCode.append(" br label %false\n");
-                                llvmCode.append("false:\n");
-                                //ifCounter++;
+                                llvmCode.append(" br label %exit" + children.get(i).getIfCounter() + "\n");
+                                llvmCode.append("exit" + children.get(i).getIfCounter() + ":\n");
                             }
                         }
-                        else if (children.get(i).getChildren().get(0).getIfCounter() > 1) {
+                        else if (children.get(i).getIfCounter() > 1) {
                             if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.CODE) {
-                                llvmCode.append(" br label %exit" + children.get(i).getChildren().get(0).getIfCounter() + "\n");
-                                llvmCode.append("exit" + children.get(i).getChildren().get(0).getIfCounter() + ":\n");
+                                llvmCode.append(" br label %exit" + children.get(i).getIfCounter() + "\n");
+                                llvmCode.append("exit" + children.get(i).getIfCounter() + ":\n");
                             }        
                             else if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.IF_NT) {
-                                llvmCode.append(" br label %exit" + children.get(i).getChildren().get(0).getIfCounter() + "\n");
-                                llvmCode.append("exit" + children.get(i).getChildren().get(0).getIfCounter() + ":\n");
+                                llvmCode.append(" br label %exit" + children.get(i).getIfCounter() + "\n");
+                                llvmCode.append("exit" + children.get(i).getIfCounter() + ":\n");
+                            }
+                        }
+                        break;
+                    case WHILE_NT : 
+                        wCounter++;
+                        children.get(i).setWCounter(wCounter);
+                        llvmCode.append(" br label %while" + children.get(i).getWCounter() + "\n");
+                        llvmCode.append("while" + children.get(i).getWCounter() + ":\n");
+                        children.get(i).getChildren().get(0).setWCounter(wCounter); // So cond can detect if he is a child of WHILE_NT 
+                        currentCode = analyze(children.get(i));
+                        llvmCode.append(currentCode);
+                        if (children.get(i).getWCounter() == 1) {
+                            llvmCode.append(" br label %while" + children.get(i).getWCounter() + "\n");
+                            llvmCode.append("wexit" + children.get(i).getWCounter() + ":\n");
+                        
+                        }
+                        else if (children.get(i).getWCounter() > 1) {
+                            if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.CODE) {
+                                //llvmCode.append(" br label %exit" + children.get(i).getChildren().get(0).getIfCounter() + "\n");
+                                //llvmCode.append("exit" + children.get(i).getChildren().get(0).getIfCounter() + ":\n");
+                            }        
+                            else if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.WHILE_NT) {
+                                llvmCode.append(" br label %while" + children.get(i).getWCounter() + "\n");
+                                //llvmCode.append(" br label %exit" + children.get(i).getChildren().get(0).getIfCounter() + "\n");
+                                llvmCode.append("wexit" + children.get(i).getWCounter() + ":\n");
                             }
                         }
                         break;
@@ -248,39 +284,44 @@ public class Llvm {
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         llvmCode.append(" %" + line + " = icmp " + children.get(i).getChildren().get(1).getComp() + " i32 %" +  children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(2).getCounter() + "\n");
-                        children.get(i).setIfCounter(ifCounter);
-
+                     
                         if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.IFTAIL) {
-                            children.get(i).setIfCounter(ifCounter);
                             llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %else" + ifCounter + "\n");
                             llvmCode.append("true" + ifCounter + ":\n");
                         } 
-
-                        else {
-                            if (ifCounter == 1){
-                                llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %false\n"); 
+                        // Detect that COND is a child of IF_NT
+                        else if (children.get(i).getIfCounter() != 0) {
+                            if (ifCounter == 1) {
+                                llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %exit" + ifCounter + "\n"); 
                                 llvmCode.append("true" + ifCounter + ":\n");
                             }
-                            else {
+                            else { 
                                 llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %exit" + ifCounter + "\n"); 
                                 llvmCode.append("true" + ifCounter + ":\n");
                             }
                         }
-                        ifCounter++;
+                        // Detect that COND is a child of WHILE_NT
+                        else if (children.get(i).getWCounter() != 0) {
+                            
+                                llvmCode.append(" br i1 %" + line + ", label %wtrue" + wCounter + ", label %wexit" + wCounter + "\n");
+                                llvmCode.append("wtrue" + wCounter + ":\n");
+                            
+                        }
+
                         line++;
                         break;
                     case IFTAIL :
-                        if (children.get(0).getIfCounter() == 1) {
+                        if (children.get(i).getIfCounter() == 1) {
                             llvmCode.append(" br label %exit\n");
                         }
-                        else if (children.get(0).getIfCounter() > 1) {
-                            llvmCode.append(" br label %exit" + children.get(0).getIfCounter() +"\n");
+                        else if (children.get(i).getIfCounter() > 1) {
+                            llvmCode.append(" br label %exit" + children.get(i).getIfCounter() +"\n");
                         }
-                        llvmCode.append("else" + children.get(0).getIfCounter() + ":\n");
+                        llvmCode.append("else" + children.get(i).getIfCounter() + ":\n");
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         
-                        if (children.get(0).getIfCounter() == 1) {
+                        if (children.get(i).getIfCounter() == 1) {
                             llvmCode.append(" br label %exit\n");
                             llvmCode.append("exit:\n");
                         }

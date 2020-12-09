@@ -19,6 +19,7 @@ public class ParseTree {
     private int counter;
     private String comp;
     private int ifCounter;
+    private int wCounter;
 
     /**
      * Creates a singleton tree with only a root labeled by lbl.
@@ -75,6 +76,14 @@ public class ParseTree {
 
     public void setIfCounter(int ifCounter) {
         this.ifCounter = ifCounter;
+    }
+
+    public int getWCounter() {
+        return wCounter;
+    }
+
+    public void setWCounter(int wCounter) {
+        this.wCounter = wCounter;
     }
 
     /**

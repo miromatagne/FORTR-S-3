@@ -109,7 +109,7 @@ public class AST {
               }
               //Else, it means the IfTail contains an ELSE (rule 24)
               else {
-                System.out.println("OK2");
+                //System.out.println("OK2");
                 children.set(i,cleanTree(children.get(i)));
               }
             default:
