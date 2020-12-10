@@ -30,9 +30,6 @@ public class Llvm {
 
     public Llvm(ParseTree tree) {
         this.tree = tree;
-    }
-
-    public void start() {
         this.llvmCode = toLlvm();
     }
 
@@ -46,29 +43,22 @@ public class Llvm {
             String currentCode = null;
             String value = null;
             int i = 0;
-            
-            //System.out.println("size : " + children.size());
-            //System.out.println(children.get(i).getLabel().getType());
 
             while (i < children.size()) {
                 switch (children.get(i).getLabel().getType()) {
                     case CODE:
                         currentCode = analyze(children.get(i));
-                        //value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
-                        
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
                         break;
                     case ASSIGN_NT : 
                         currentCode = analyze(children.get(i));
                         value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  // insert(int = 0, string = value) ? 
-                        llvmCode.append(" store i32 %" + String.valueOf((line-1)) + ", i32* %" + value);
-                        llvmCode.append("\n");
+                        llvmCode.append(" store i32 %" + String.valueOf((line-1)) + ", i32* %" + value + "\n");
                         break;
                     case READ_NT : 
                         currentCode = analyze(children.get(i));
-                        llvmCode.append(" %" + line + " = call i32 readInt()");
-                        llvmCode.append("\n");
+                        llvmCode.append(" %" + line + " = call i32 readInt()" + "\n");
                         llvmCode.append(currentCode);
                         llvmCode.append(" store i32 %" + line + ", i32* %" + children.get(i).getChildren().get(0).getLabel().getValue().toString());
                         llvmCode.append("\n");
@@ -208,122 +198,113 @@ public class Llvm {
                         break;  
                     case VARNAME :
                         if (!values.contains(children.get(i).getLabel().getValue())) {
-                            llvmCode.append(" %" + children.get(i).getLabel().getValue().toString() + " = alloca i32");
-                            llvmCode.append("\n");
+                            llvmCode.append("\t%" + children.get(i).getLabel().getValue().toString() + " = alloca i32" + "\n");
                             values.add(children.get(i).getLabel().getValue());
                         }
                         break;
                     case NUMBER :
-                        llvmCode.append(" %" + line + " = alloca i32\n");
-                        llvmCode.append(" store i32 " + children.get(i).getLabel().getValue() + ", i32* %" + line + "\n");  //.toString()
+                        llvmCode.append("\t%" + line + " = alloca i32\n");
+                        llvmCode.append("\tstore i32 " + children.get(i).getLabel().getValue() + ", i32* %" + line + "\n");  //.toString()
                         line++;
-                        llvmCode.append(" %" + line + " = load i32, i32* %" + (line-1) + "\n");
-                        //llvmCode.append("\n");
+                        llvmCode.append("\t%" + line + " = load i32, i32* %" + (line-1) + "\n");
                         children.get(i).setCounter(line);
                         line++;
                         break;
                     case IF_NT :
                         ifCounter++;
-                        children.get(i).setIfCounter(ifCounter); /////
+                        children.get(i).setIfCounter(ifCounter); 
+                        // If there is an ELSE_NT
                         if (children.get(i).getChildren().get(children.get(i).getChildren().size()-1).getLabel().getType() == LexicalUnit.IFTAIL) {
                             children.get(i).getChildren().get(children.get(i).getChildren().size()-1).setIfCounter(ifCounter);;
                         }
                         children.get(i).getChildren().get(0).setIfCounter(ifCounter);  // So cond can detect if he is a child of IF_NT 
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-
+                        // First IF_NT
                         if (children.get(i).getIfCounter() == 1) {
+                            // If there is no ELSE_NT
                             if (children.get(i).getChildren().get(children.get(i).getChildren().size() - 1).getLabel().getType() != LexicalUnit.IFTAIL) {
-                                llvmCode.append(" br label %exit" + children.get(i).getIfCounter() + "\n");
-                                llvmCode.append("exit" + children.get(i).getIfCounter() + ":\n");
+                                llvmCode.append("\tbr label %exit" + children.get(i).getIfCounter() + "\n");
+                                llvmCode.append("  exit" + children.get(i).getIfCounter() + ":\n");
                             }
                         }
+                        // The nth IF_NT
                         else if (children.get(i).getIfCounter() > 1) {
+                            // If there is no ELSE_NT
                             if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.CODE) {
-                                llvmCode.append(" br label %exit" + children.get(i).getIfCounter() + "\n");
-                                llvmCode.append("exit" + children.get(i).getIfCounter() + ":\n");
+                                llvmCode.append("\tbr label %exit" + children.get(i).getIfCounter() + "\n");
+                                llvmCode.append("  exit" + children.get(i).getIfCounter() + ":\n");
                             }        
+                            // If there is no CODE and no ELSE_NT
                             else if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.IF_NT) {
-                                llvmCode.append(" br label %exit" + children.get(i).getIfCounter() + "\n");
-                                llvmCode.append("exit" + children.get(i).getIfCounter() + ":\n");
+                                llvmCode.append("\tbr label %exit" + children.get(i).getIfCounter() + "\n");
+                                llvmCode.append("  exit" + children.get(i).getIfCounter() + ":\n");
                             }
                         }
                         break;
                     case WHILE_NT : 
                         wCounter++;
                         children.get(i).setWCounter(wCounter);
-                        llvmCode.append(" br label %while" + children.get(i).getWCounter() + "\n");
-                        llvmCode.append("while" + children.get(i).getWCounter() + ":\n");
-                        children.get(i).getChildren().get(0).setWCounter(wCounter); // So cond can detect if he is a child of WHILE_NT 
+                        llvmCode.append("\tbr label %while" + children.get(i).getWCounter() + "\n");
+                        llvmCode.append("  while" + children.get(i).getWCounter() + ":\n");
+                        children.get(i).getChildren().get(0).setWCounter(wCounter); // So cond can detect if it is a child of WHILE_NT 
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
+                        // First WHILE
                         if (children.get(i).getWCounter() == 1) {
-                            llvmCode.append(" br label %while" + children.get(i).getWCounter() + "\n");
-                            llvmCode.append("wexit" + children.get(i).getWCounter() + ":\n");
-                        
+                            llvmCode.append("\tbr label %while" + children.get(i).getWCounter() + "\n");
+                            llvmCode.append("  wexit" + children.get(i).getWCounter() + ":\n");
                         }
+                        // The nth WHILE 
                         else if (children.get(i).getWCounter() > 1) {
-                            if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.CODE) {
-                                //llvmCode.append(" br label %exit" + children.get(i).getChildren().get(0).getIfCounter() + "\n");
-                                //llvmCode.append("exit" + children.get(i).getChildren().get(0).getIfCounter() + ":\n");
-                            }        
-                            else if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.WHILE_NT) {
-                                llvmCode.append(" br label %while" + children.get(i).getWCounter() + "\n");
-                                //llvmCode.append(" br label %exit" + children.get(i).getChildren().get(0).getIfCounter() + "\n");
-                                llvmCode.append("wexit" + children.get(i).getWCounter() + ":\n");
+                            if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.WHILE_NT) {
+                                llvmCode.append("\tbr label %while" + children.get(i).getWCounter() + "\n");
+                                llvmCode.append("  wexit" + children.get(i).getWCounter() + ":\n");
                             }
                         }
                         break;
                     case COND :
+                        // If the first child of COND is a single VARNAME
                         if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME) {
-                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());
-                            llvmCode.append("\n");
+                            llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
-                        llvmCode.append(" %" + line + " = icmp " + children.get(i).getChildren().get(1).getComp() + " i32 %" +  children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(2).getCounter() + "\n");
-                     
+                        llvmCode.append("\t%" + line + " = icmp " + children.get(i).getChildren().get(1).getComp() + " i32 %" +  children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(2).getCounter() + "\n");
+                        // If there is a ELSE statement
                         if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.IFTAIL) {
-                            llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %else" + ifCounter + "\n");
-                            llvmCode.append("true" + ifCounter + ":\n");
+                            llvmCode.append("\tbr i1 %" + line + ", label %true" + ifCounter + ", label %else" + ifCounter + "\n");
+                            llvmCode.append("  true" + ifCounter + ":\n");
                         } 
                         // Detect that COND is a child of IF_NT
                         else if (children.get(i).getIfCounter() != 0) {
-                            if (ifCounter == 1) {
-                                llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %exit" + ifCounter + "\n"); 
-                                llvmCode.append("true" + ifCounter + ":\n");
-                            }
-                            else { 
-                                llvmCode.append(" br i1 %" + line + ", label %true" + ifCounter + ", label %exit" + ifCounter + "\n"); 
-                                llvmCode.append("true" + ifCounter + ":\n");
-                            }
+                            llvmCode.append("\tbr i1 %" + line + ", label %true" + ifCounter + ", label %exit" + ifCounter + "\n"); 
+                            llvmCode.append("  true" + ifCounter + ":\n");
                         }
                         // Detect that COND is a child of WHILE_NT
                         else if (children.get(i).getWCounter() != 0) {
-                            
-                                llvmCode.append(" br i1 %" + line + ", label %wtrue" + wCounter + ", label %wexit" + wCounter + "\n");
-                                llvmCode.append("wtrue" + wCounter + ":\n");
-                            
+                            llvmCode.append("\tbr i1 %" + line + ", label %wtrue" + wCounter + ", label %wexit" + wCounter + "\n");
+                            llvmCode.append("  wtrue" + wCounter + ":\n");
                         }
 
                         line++;
                         break;
                     case IFTAIL :
                         if (children.get(i).getIfCounter() == 1) {
-                            llvmCode.append(" br label %exit\n");
+                            llvmCode.append("\tbr label %exit\n");
                         }
                         else if (children.get(i).getIfCounter() > 1) {
-                            llvmCode.append(" br label %exit" + children.get(i).getIfCounter() +"\n");
+                            llvmCode.append("\tbr label %exit" + children.get(i).getIfCounter() +"\n");
                         }
-                        llvmCode.append("else" + children.get(i).getIfCounter() + ":\n");
+                        llvmCode.append("  else" + children.get(i).getIfCounter() + ":\n");
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         
                         if (children.get(i).getIfCounter() == 1) {
-                            llvmCode.append(" br label %exit\n");
-                            llvmCode.append("exit:\n");
+                            llvmCode.append("\tbr label %exit\n");
+                            llvmCode.append("  exit:\n");
                         }
                         break;
                     case GT :
@@ -347,9 +328,9 @@ public class Llvm {
 
     private String toLlvm() {
         String main = "define i32 @main() {" + "\n" +
-        " entry:" + "\n" + 
-        analyze(this.tree) + 
-        "  ret i32 0" + "\n" +
+        "  entry:" + "\n" + 
+        "\t" + analyze(this.tree) + 
+        "\tret i32 0" + "\n" +
         "}";
         return /*this.read + "\n" + this.print + "\n" +*/ main;
     }
