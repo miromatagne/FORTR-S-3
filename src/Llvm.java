@@ -8,25 +8,17 @@ public class Llvm {
     private static int ifCounter = 0;
     private static int wCounter = 0;
     private static List<Object> values = new ArrayList<Object>();
-    private static String read = "@.strR = private unnamed_addr constant [3 x i8] c\"%d\\00\", align 1" + "\n" + 
-        "define i32 @readInt() #0 {" + "\n" + 
-        " %1 = alloca i32, align 4" + "\n" +
-        " %2 = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.strR, i32 0, i32 0), i32* %1)" + "\n" +
-        " %3 = load i32, i32* %1, align 4" + "\n" +
-        " ret i32 %3" +
-        "}" + "\n" +      
-        "declare i32 @scanf(i8*, ...) #1";
+    private static String read = "@.strR = private unnamed_addr constant [3 x i8] c\"%d\\00\", align 1" + "\n"
+            + "define i32 @readInt() #0 {" + "\n" + " %1 = alloca i32, align 4" + "\n"
+            + " %2 = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.strR, i32 0, i32 0), i32* %1)"
+            + "\n" + " %3 = load i32, i32* %1, align 4" + "\n" + " ret i32 %3" + "}" + "\n"
+            + "declare i32 @scanf(i8*, ...) #1";
 
-    private static String print = "@.strP = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\", align 1" + "\n" + "\n" +
-        "define void @println(i32 %x) {" + "\n" +
-        " %1 = alloca i32, align 4" + "\n" +
-        " store i32 %x, i32* %1, align 4" + "\n" +
-        " %2 = load i32, i32* %1, align 4" + "\n" +
-        " %3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.strP, i32 0, i32 0), i32 %2)" + "\n" +
-        " ret void" + "\n" +
-        "}" + "\n" +
-        "declare i32 @printf(i8*, ...) #1";
-
+    private static String print = "@.strP = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\", align 1" + "\n"
+            + "\n" + "define void @println(i32 %x) {" + "\n" + " %1 = alloca i32, align 4" + "\n"
+            + " store i32 %x, i32* %1, align 4" + "\n" + " %2 = load i32, i32* %1, align 4" + "\n"
+            + " %3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.strP, i32 0, i32 0), i32 %2)"
+            + "\n" + " ret void" + "\n" + "}" + "\n" + "declare i32 @printf(i8*, ...) #1";
 
     public Llvm(ParseTree tree) {
         this.tree = tree;
@@ -315,7 +307,7 @@ public class Llvm {
                 return "Error : undefined variable" ;
             }
 
-            return llvmCode.toString();
+        return llvmCode.toString();
     }
 
     private String toLlvm() {
