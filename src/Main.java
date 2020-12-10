@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Time;
 
 /* 
     INFO-F-430 project, Part 2
@@ -26,10 +27,31 @@ public class Main {
    */
   public static void main(String[] argv) {
     // Syntax check
-    if (argv.length != 1) {
+    boolean valid = true;
+    if (argv.length == 0) {
       System.out.println("Invalid number of arguments");
-    } else {
-      String fileName = argv[0];
+      valid = false;
+    }
+    String fileName = null;
+    String outputFile = null;
+    boolean exec = false;
+    for (int i = 0; i < argv.length; i++) {
+      if (argv[i].equals("-exec")) {
+        exec = true;
+      } else if (argv[i].equals("-o")) {
+        if (i != argv.length - 1 && argv[i + 1].charAt(0) != '-') {
+          outputFile = argv[i + 1];
+          i++;
+        } else {
+          System.out.println("-o should be followed by a file name.");
+          valid = false;
+        }
+      } else {
+        fileName = argv[i];
+      }
+    }
+
+    if (valid && fileName != null) {
       List<Symbol> tokens = new ArrayList<Symbol>();
       tokens = getTokens(fileName);
       Parser parser = new Parser(tokens, false);
@@ -39,7 +61,37 @@ public class Main {
       llvm.start();
       String code = llvm.getLlvm();
       if (code != "") {
-        System.out.println(code);
+        //System.out.println(code);
+      }
+      if (outputFile != null) {
+        FileWriter llvmFile;
+        try {
+          llvmFile = new FileWriter(outputFile);
+          llvmFile.write(code);
+          llvmFile.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+      if (exec) {
+        FileWriter sourceLlvm;
+        try {
+          sourceLlvm = new FileWriter("source-code.ll");
+          sourceLlvm.write(code);
+          sourceLlvm.close();
+          ProcessBuilder builder = new ProcessBuilder("llvm-as","source-code.ll","-o=source-code.bc");
+          builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+          builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+          Process p = builder.start();
+          p.waitFor();
+          ProcessBuilder builder2 = new ProcessBuilder("lli","source-code.bc");
+          builder2.redirectError(ProcessBuilder.Redirect.INHERIT);
+          builder2.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+          Process p2 = builder2.start();
+          p2.waitFor();
+        } catch (IOException | InterruptedException e) {
+          e.printStackTrace();
+        }
       }
 
       FileWriter myWriter;
@@ -52,7 +104,7 @@ public class Main {
         e.printStackTrace();
       }
       // if (rules != null) {
-      //   printRules(rules);
+      // printRules(rules);
       // }
     }
   }
