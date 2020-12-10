@@ -58,7 +58,7 @@ public class Llvm {
                         break;
                     case READ_NT : 
                         currentCode = analyze(children.get(i));
-                        llvmCode.append(" %" + line + " = call i32 readInt()" + "\n");
+                        llvmCode.append(" %" + line + " = call i32 @readInt()" + "\n");
                         llvmCode.append(currentCode);
                         llvmCode.append(" store i32 %" + line + ", i32* %" + children.get(i).getChildren().get(0).getLabel().getValue().toString());
                         llvmCode.append("\n");
@@ -171,8 +171,7 @@ public class Llvm {
                         }
 
                         if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
-                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue());
-                            llvmCode.append("\n");
+                            llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
@@ -180,8 +179,7 @@ public class Llvm {
                         if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
-                            llvmCode.append(" %" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue()); 
-                            llvmCode.append("\n");
+                            llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(1).setCounter(line);
                             line++;
                         }
@@ -190,13 +188,12 @@ public class Llvm {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
                         }
-
-                        llvmCode.append(" %" + line + " = sub i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter());
-                        llvmCode.append("\n");
+                        llvmCode.append("\t%" + line + " = sub i32 %" + children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(1).getCounter() + "\n");
                         children.get(i).setCounter(line);
                         line++;
                         break;  
                     case VARNAME :
+                        // VARNAME not declared yet
                         if (!values.contains(children.get(i).getLabel().getValue())) {
                             llvmCode.append("\t%" + children.get(i).getLabel().getValue().toString() + " = alloca i32" + "\n");
                             values.add(children.get(i).getLabel().getValue());
