@@ -1,7 +1,8 @@
 BEGINPROG Test
     a := 10
-
-    IF (a > 0) THEN
+    b := 1
+    IF ((a+b) > 0) THEN
+        b := 0
     ELSE
         WHILE (a > 1) DO
             a := a - 1
