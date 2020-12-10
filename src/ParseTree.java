@@ -17,6 +17,9 @@ public class ParseTree {
     private Symbol label; // The label of the root of the tree
     private List<ParseTree> children; // Its children, which are trees themselves
     private int counter;
+    private String comp;
+    private int ifCounter;
+    private int wCounter;
 
     /**
      * Creates a singleton tree with only a root labeled by lbl.
@@ -57,6 +60,30 @@ public class ParseTree {
 
     public void setCounter(int c) {
         this.counter = c;
+    }
+
+    public String getComp() {
+        return comp;
+    }
+
+    public void setComp(String comp) {
+        this.comp = comp;
+    }
+
+    public int getIfCounter() {
+        return ifCounter;
+    }
+
+    public void setIfCounter(int ifCounter) {
+        this.ifCounter = ifCounter;
+    }
+
+    public int getWCounter() {
+        return wCounter;
+    }
+
+    public void setWCounter(int wCounter) {
+        this.wCounter = wCounter;
     }
 
     /**
