@@ -65,17 +65,17 @@ public class Llvm {
                         break;
                     case TIMES :
                         // 
-                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) | (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
+                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) || (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
                             return "Error : undefined variable";
                         }
                         // 
-                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
                         
-                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue() + "\n"); 
@@ -93,17 +93,17 @@ public class Llvm {
                         break;
                     case DIVIDE :
                         // If an VARNAME is not declared yet, it returns an error
-                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) | (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
+                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) || (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
                             return "Error : undefined variable";
                         }
 
-                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
                         
-                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue() + "\n"); 
@@ -122,17 +122,17 @@ public class Llvm {
                         break;
                     case PLUS :
                         // If an VARNAME is not declared yet, it returns an error
-                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) | (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
+                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) || (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
                             return "Error : undefined variable";
                         }
 
-                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
                         
-                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue() + "\n");
@@ -151,17 +151,17 @@ public class Llvm {
                         break;
                     case MINUS :
                         // If an VARNAME is not declared yet, it returns an error 
-                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) | (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
+                        if ((children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) || (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && !values.contains(children.get(i).getChildren().get(1).getLabel().getValue()))) {
                             return "Error : undefined variable";
                         }
                         // If the first child of MINUS is a VARNAME and it is initialized
-                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(0).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
                         
-                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME & values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME && values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
                             currentCode = analyze(children.get(i));
                             llvmCode.append(currentCode);
                             llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue() + "\n");
