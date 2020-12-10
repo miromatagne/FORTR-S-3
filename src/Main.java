@@ -58,7 +58,6 @@ public class Main {
       List<Integer> rules = parser.start();
       ParseTree ast = new AST(parser.getTree()).getAST();
       Llvm llvm = new Llvm(ast);
-      llvm.start();
       String code = llvm.getLlvm();
       if (code != "") {
         //System.out.println(code);
