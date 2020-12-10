@@ -1,13 +1,8 @@
 BEGINPROG Test
-    a := 10
-    b := 1
-    IF ((a+b) > 0) THEN
-        b := 0
+    b := 1   
+    IF (z = 1) THEN
+        a := 1
     ELSE
-        WHILE (a > 1) DO
-            a := a - 1
-        ENDWHILE
-
+        a :=  2
     ENDIF
-
 ENDPROG

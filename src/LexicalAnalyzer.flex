@@ -93,7 +93,7 @@ ZeroError       = (0){Numeric}+
 	")"				{return new Symbol(LexicalUnit.RPAREN,yyline, yycolumn, yytext());}
 
 	// Relational operators
-	"=="	        { return new Symbol(LexicalUnit.EQ,yyline, yycolumn, yytext());}
+	"="	        { return new Symbol(LexicalUnit.EQ,yyline, yycolumn, yytext());}
 	">"		        {return new Symbol(LexicalUnit.GT,yyline, yycolumn,yytext());}
 
 	//PRINT and READ commands

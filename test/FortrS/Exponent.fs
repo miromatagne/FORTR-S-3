@@ -17,7 +17,7 @@ If the number is negative, print an error */
             ENDWHILE
             PRINT(result)
     ELSE
-        IF(power == 0) THEN 
+        IF(power = 0) THEN 
             result := 1
             PRINT(result)
         ELSE

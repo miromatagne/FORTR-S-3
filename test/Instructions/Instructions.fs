@@ -2,7 +2,7 @@ BEGINPROG Instructions
 
 READ(number)
 
-IF(number == -1) THEN
+IF(number = -1) THEN
     number := -1
 ELSE
     number := 0
