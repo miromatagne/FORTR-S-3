@@ -54,12 +54,16 @@ public class Llvm {
                         llvmCode.append("\t%" + line + " = call i32 @readInt()" + "\n");
                         llvmCode.append(currentCode);
                         llvmCode.append("\tstore i32 %" + line + ", i32* %" + children.get(i).getChildren().get(0).getLabel().getValue().toString() + "\n");
+                        values.add(children.get(i).getChildren().get(0).getLabel().getValue());
                         children.get(i).setCounter(line);
                         line++;
                         break;
                     case PRINT_NT :
                         currentCode = analyze(children.get(i)); 
                         llvmCode.append(currentCode);
+                        if (! values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
+                            return "Error : undefined variable";
+                        }
                         llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue()  + "\n"); 
                         llvmCode.append("\tcall void @println(i32 %" + line +")\n");  
                         break;

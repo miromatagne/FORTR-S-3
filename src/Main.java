@@ -60,7 +60,7 @@ public class Main {
       Llvm llvm = new Llvm(ast);
       String code = llvm.getLlvm();
       if (code != "") {
-        //System.out.println(code);
+        System.out.println(code);
       }
       if (outputFile != null) {
         FileWriter llvmFile;
