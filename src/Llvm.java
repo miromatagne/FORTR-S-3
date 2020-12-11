@@ -259,6 +259,14 @@ public class Llvm {
                             children.get(i).getChildren().get(0).setCounter(line);
                             line++;
                         }
+                        if (children.get(i).getChildren().get(2).getLabel().getType() == LexicalUnit.VARNAME) {
+                            if (!values.contains(children.get(i).getChildren().get(2).getLabel().getValue())) {
+                                return "Error : undefined variable";
+                            }
+                            llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(2).getLabel().getValue() + "\n");
+                            children.get(i).getChildren().get(2).setCounter(line);
+                            line++;
+                        }
                         currentCode = analyze(children.get(i));
                         llvmCode.append(currentCode);
                         llvmCode.append("\t%" + line + " = icmp " + children.get(i).getChildren().get(1).getComp() + " i32 %" +  children.get(i).getChildren().get(0).getCounter() + ", %" + children.get(i).getChildren().get(2).getCounter() + "\n");
