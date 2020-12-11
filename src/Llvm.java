@@ -7,6 +7,7 @@ public class Llvm {
     private static int line = 0;
     private static int ifCounter = 0;
     private static int wCounter = 0;
+    private static boolean inLoop = false;
     private static List<Object> values = new ArrayList<Object>();
     private static String read = "@.strR = private unnamed_addr constant [3 x i8] c\"%d\\00\", align 1" + "\n"
             + "define i32 @readInt() #0 {" + "\n" + " %1 = alloca i32, align 4" + "\n"
@@ -47,7 +48,12 @@ public class Llvm {
                         value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  
                         llvmCode.append("\tstore i32 %" + String.valueOf((line-1)) + ", i32* %" + value + "\n");
-                        values.add(children.get(i).getChildren().get(0).getLabel().getValue());
+                        if (inLoop == false) {
+                            values.add(children.get(i).getChildren().get(0).getLabel().getValue());
+                        }  
+                        else if (inLoop == true && !values.contains(children.get(i).getChildren().get(0).getLabel().getValue())) {
+                            return "Error : undefined variable";
+                        }  
                         break;
                     case READ_NT : 
                         currentCode = analyze(children.get(i));
@@ -197,6 +203,7 @@ public class Llvm {
                         line++;
                         break;
                     case IF_NT :
+                        inLoop = true; 
                         ifCounter++;
                         children.get(i).setIfCounter(ifCounter); 
                         // If there is an ELSE_NT
@@ -227,8 +234,10 @@ public class Llvm {
                                 llvmCode.append("  exit" + children.get(i).getIfCounter() + ":\n");
                             }
                         }
+                        inLoop = false;
                         break;
                     case WHILE_NT : 
+                        inLoop = true;
                         wCounter++;
                         children.get(i).setWCounter(wCounter);
                         llvmCode.append("\tbr label %while" + children.get(i).getWCounter() + "\n");
@@ -248,6 +257,7 @@ public class Llvm {
                                 llvmCode.append("  wexit" + children.get(i).getWCounter() + ":\n");
                             }
                         }
+                        inLoop = false;
                         break;
                     case COND :
                         // If the first child of COND is a single VARNAME
