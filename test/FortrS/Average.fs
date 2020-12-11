@@ -2,6 +2,7 @@ BEGINPROG Average
 
     READ(nbnumbers)     // Read the number of numbers that the user is going to enter next
     average := 0  
+    PRINT(nbnumbers)
     IF (nbnumbers > 0) THEN
       i := 0
       WHILE(nbnumbers > i) DO

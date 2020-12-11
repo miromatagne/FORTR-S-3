@@ -66,6 +66,7 @@ public class Llvm {
                         }
                         llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(0).getLabel().getValue()  + "\n"); 
                         llvmCode.append("\tcall void @println(i32 %" + line +")\n");  
+                        line++;
                         break;
                     case TIMES :
                         // 
@@ -325,7 +326,7 @@ public class Llvm {
             return "Error : undefined variable" ;
         }
 
-        return /*this.read + "\n" + this.print + "\n" +*/ main;
+        return this.read + /*"\n" + this.print + "\n" +*/ main;
     }
 
 }
