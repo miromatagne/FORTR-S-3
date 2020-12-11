@@ -4,7 +4,7 @@ all:
 	jar cfe dist/part3.jar Main -C bin .
 
 testing:
-	java -jar dist/part3.jar test/Atom/Atom.fs
+	java -jar dist/part3.jar test/FortrS/Average.fs
 
 output:
 	java -jar dist/part3.jar -o outputFile.ll test/Atom/Atom.fs
