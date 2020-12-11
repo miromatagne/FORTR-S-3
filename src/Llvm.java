@@ -334,7 +334,7 @@ public class Llvm {
             return "Error : undefined variable" ;
         }
 
-        return this.read + /*"\n" + this.print + "\n" +*/ main;
+        return this.read + "\n" + this.print + "\n" + main;
     }
 
 }

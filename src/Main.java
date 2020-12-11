@@ -86,6 +86,7 @@ public class Main {
           ProcessBuilder builder2 = new ProcessBuilder("lli","source-code.bc");
           builder2.redirectError(ProcessBuilder.Redirect.INHERIT);
           builder2.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+          builder2.redirectInput(ProcessBuilder.Redirect.INHERIT);
           Process p2 = builder2.start();
           p2.waitFor();
         } catch (IOException | InterruptedException e) {
