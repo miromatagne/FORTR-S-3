@@ -10,7 +10,7 @@ output:
 	java -jar dist/part3.jar -o outputFile.ll test/Atom/Atom.fs
 
 exec:
-	java -jar dist/part3.jar -exec test/FortrS/Average.fs
+	java -jar dist/part3.jar -exec test/Program/Program.fs
 
 ast:
 	java -jar dist/part3.jar test/FortrS/Average.fs -ast test.tex
