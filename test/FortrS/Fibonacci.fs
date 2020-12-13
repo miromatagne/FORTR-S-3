@@ -7,6 +7,7 @@ so i is minimum 2) */
     READ(num)
     n1 := 0
     n2 := 1
+    n3 := 0
     i := 2
 
     PRINT(n1)

@@ -1,0 +1,14 @@
+\documentclass[border=5pt]{standalone}
+
+\usepackage{tikz}
+\usepackage{forest}
+
+\begin{document}
+
+\begin{forest}for tree={rectangle, draw, l sep=20pt}[{\textbf{\textless Program\textgreater}} [{\textbf{\textless Code\textgreater}} [{\textbf{\textless Read\textgreater}} [{\textbf{VARNAME}  number} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  result} ][{\textbf{NUMBER}  1} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless If\textgreater}} [{\textbf{\textless Cond\textgreater}} [{\textbf{VARNAME}  number} ][{GT \textgreater} ][{\textbf{NUMBER}  -1} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless While\textgreater}} [{\textbf{\textless Cond\textgreater}} [{\textbf{VARNAME}  number} ][{GT \textgreater} ][{\textbf{NUMBER}  0} ]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  result} ][{\textbf{TIMES}  *} [{\textbf{VARNAME}  result} ][{\textbf{VARNAME}  number} ]]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  number} ][{\textbf{MINUS}  -} [{\textbf{VARNAME}  number} ][{\textbf{NUMBER}  1} ]]]]]]][{\textbf{\textless Iftail\textgreater}} [{\textbf{\textless Code\textgreater}} [{\textbf{\textless Assign\textgreater}} [{\textbf{VARNAME}  result} ][{\textbf{NUMBER}  -1} ]]]]][{\textbf{\textless Code\textgreater}} [{\textbf{\textless Print\textgreater}} [{\textbf{VARNAME}  result} ]]]]]]];
+\end{forest}
+
+\end{document}
+%% Local Variables:
+%% TeX-engine: pdflatex
+%% End:
