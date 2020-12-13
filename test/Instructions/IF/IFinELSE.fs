@@ -1,5 +1,7 @@
 BEGINPROG IFinELSE
     a := 1
+    b := 0
+    c := -1
     IF(a = 0) THEN
         // empty
     ELSE
