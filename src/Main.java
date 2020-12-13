@@ -34,6 +34,7 @@ public class Main {
     }
     String fileName = null;
     String outputFile = null;
+    String astFile = null;
     boolean exec = false;
     for (int i = 0; i < argv.length; i++) {
       if (argv[i].equals("-exec")) {
@@ -44,6 +45,14 @@ public class Main {
           i++;
         } else {
           System.out.println("-o should be followed by a file name.");
+          valid = false;
+        }
+      } else if (argv[i].equals("-ast")) {
+        if (i != argv.length - 1 && argv[i + 1].charAt(0) != '-') {
+          astFile = argv[i + 1];
+          i++;
+        } else {
+          System.out.println("-ast should be followed by a file name.");
           valid = false;
         }
       } else {
@@ -78,12 +87,12 @@ public class Main {
           sourceLlvm = new FileWriter("source-code.ll");
           sourceLlvm.write(code);
           sourceLlvm.close();
-          ProcessBuilder builder = new ProcessBuilder("llvm-as","source-code.ll","-o=source-code.bc");
+          ProcessBuilder builder = new ProcessBuilder("llvm-as", "source-code.ll", "-o=source-code.bc");
           builder.redirectError(ProcessBuilder.Redirect.INHERIT);
           builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
           Process p = builder.start();
           p.waitFor();
-          ProcessBuilder builder2 = new ProcessBuilder("lli","source-code.bc");
+          ProcessBuilder builder2 = new ProcessBuilder("lli", "source-code.bc");
           builder2.redirectError(ProcessBuilder.Redirect.INHERIT);
           builder2.redirectOutput(ProcessBuilder.Redirect.INHERIT);
           builder2.redirectInput(ProcessBuilder.Redirect.INHERIT);
@@ -93,19 +102,17 @@ public class Main {
           e.printStackTrace();
         }
       }
-
-      FileWriter myWriter;
-      try {
-        myWriter = new FileWriter("test.tex");
-        myWriter.write(ast.toLaTeX());
-        myWriter.close();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+      if (astFile != null) {
+        FileWriter myWriter;
+        try {
+          myWriter = new FileWriter(astFile);
+          myWriter.write(ast.toLaTeX());
+          myWriter.close();
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
-      // if (rules != null) {
-      // printRules(rules);
-      // }
     }
   }
 
