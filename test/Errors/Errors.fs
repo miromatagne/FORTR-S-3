@@ -3,7 +3,7 @@ BEGINPROG Errors
 and an other error detected by the sparser
 */
 
-a == 2
+a = 2
 b + 1 := CE
 
 ENDPROG
