@@ -45,9 +45,17 @@ public class Llvm {
                         break;
                     case ASSIGN_NT : 
                         currentCode = analyze(children.get(i));
-                        value = children.get(i).getChildren().get(0).getLabel().getValue().toString();
                         llvmCode.append(currentCode);  
-                        llvmCode.append("\tstore i32 %" + String.valueOf((line-1)) + ", i32* %" + value + "\n");
+                        if (children.get(i).getChildren().get(1).getLabel().getType() == LexicalUnit.VARNAME) {
+                            if (values.contains(children.get(i).getChildren().get(1).getLabel().getValue())) {
+                                llvmCode.append("\t%" + line + " = load i32, i32* %" + children.get(i).getChildren().get(1).getLabel().getValue() + "\n");
+                                line++;
+                            }
+                            else {
+                                return "Error : undefined variable";
+                            }
+                        }
+                        llvmCode.append("\tstore i32 %" + String.valueOf((line-1)) + ", i32* %" + children.get(i).getChildren().get(0).getLabel().getValue() + "\n");
                         if (inLoop == false) {
                             values.add(children.get(i).getChildren().get(0).getLabel().getValue());
                         }  
