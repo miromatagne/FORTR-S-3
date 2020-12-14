@@ -10,7 +10,7 @@ output:
 	java -jar dist/part3.jar -o outputFile.ll test/Atom/Atom.fs
 
 exec:
-	java -jar dist/part3.jar -exec test/Instructions/WHILE/NestedWHILE.fs
+	java -jar dist/part3.jar -exec test/Instructions/WHILE/ConsecutiveWHILE.fs
 
 ast:
 	java -jar dist/part3.jar test/FortrS/Average.fs -ast ast.tex

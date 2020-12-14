@@ -22,45 +22,45 @@ define i32 @main() {
 	store i32 10, i32* %0
 	%1 = load i32, i32* %0
 	store i32 %1, i32* %a
-	%b = alloca i32
-	%2 = alloca i32
-	store i32 10, i32* %2
-	%3 = load i32, i32* %2
-	store i32 %3, i32* %b
 	br label %while1
   while1:
-	%4 = load i32, i32* %b
-	%5 = alloca i32
-	store i32 0, i32* %5
-	%6 = load i32, i32* %5
-	%7 = icmp sgt i32 %4, %6
-	br i1 %7, label %wtrue1, label %wexit1
+	%2 = load i32, i32* %a
+	%3 = alloca i32
+	store i32 0, i32* %3
+	%4 = load i32, i32* %3
+	%5 = icmp sgt i32 %2, %4
+	br i1 %5, label %wtrue1, label %wexit1
   wtrue1:
-	%8 = load i32, i32* %b
-	%9 = alloca i32
-	store i32 1, i32* %9
-	%10 = load i32, i32* %9
-	%11 = sub i32 %8, %10
+	%6 = load i32, i32* %a
+	%7 = alloca i32
+	store i32 1, i32* %7
+	%8 = load i32, i32* %7
+	%9 = sub i32 %6, %8
+	store i32 %9, i32* %a
+	br label %while1
+  wexit1:
+	%b = alloca i32
+	%10 = alloca i32
+	store i32 1, i32* %10
+	%11 = load i32, i32* %10
 	store i32 %11, i32* %b
 	br label %while2
   while2:
 	%12 = load i32, i32* %a
 	%13 = alloca i32
-	store i32 1, i32* %13
+	store i32 0, i32* %13
 	%14 = load i32, i32* %13
-	%15 = icmp sgt i32 %12, %14
+	%15 = icmp eq i32 %12, %14
 	br i1 %15, label %wtrue2, label %wexit2
   wtrue2:
 	%16 = load i32, i32* %a
 	%17 = alloca i32
 	store i32 1, i32* %17
 	%18 = load i32, i32* %17
-	%19 = sub i32 %16, %18
+	%19 = add i32 %16, %18
 	store i32 %19, i32* %a
 	br label %while2
   wexit2:
-	br label %while1
-  wexit1:
 	%20 = load i32, i32* %a
 	call void @println(i32 %20)
 	%21 = load i32, i32* %b
