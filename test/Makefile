@@ -2,7 +2,7 @@ all:
 	jflex ../src/LexicalAnalyzer.flex
 	javac -d ../bin -cp ../src ../src/Main.java
 
-.PHONY: all atom comments errors average exponent factorial fibonacci maximum instructions program fortrs
+.PHONY: all atom comments errors average exponent factorial fibonacci maximum if while program fortrs
 
 atom:
 	@java -cp ../bin Main ./Atom/Atom.fs >file 
@@ -12,11 +12,6 @@ atom:
 comments:
 	@java -cp ../bin Main ./Comments/Comments.fs >file 
 	@diff -b --strip-trailing-cr ./Comments/Comments.output file && echo "Comments : Test Successful" || echo "Comments : Test Failed"
-	@rm -f file
-
-errors:
-	@java -cp ../bin Main ./Errors/Errors.fs >file 
-	@diff -b --strip-trailing-cr ./Errors/Errors.output file && echo "Errors : Test Successful" || echo "Errors : Test Failed"
 	@rm -f file
 
 average:
@@ -44,9 +39,29 @@ maximum:
 	@diff -b --strip-trailing-cr ./FortrS/Maximum.output file && echo "Maximum : Test Successful" || echo "Maximum : Test Failed"
 	@rm -f file
 
-instructions:
-	@java -cp ../bin Main ./Instructions/Instructions.fs >file 
-	@diff -b --strip-trailing-cr ./Instructions/Instructions.output file && echo "Instructions : Test Successful" || echo "Instructions : Test Failed"
+if:
+	@java -cp ../bin Main ./Instructions/IF/IFinELSE.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/IF/IFinELSE.output file && echo "IFinELSE : Test Successful" || echo "IFinELSE : Test Failed"
+	@rm -f file
+	@java -cp ../bin Main ./Instructions/IF/WHILEinELSE.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/IF/WHILEinELSE.output file && echo "WHILEinELSE : Test Successful" || echo "WHILEinELSE : Test Failed"
+	@rm -f file
+	@java -cp ../bin Main ./Instructions/IF/WHILEinIF.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/IF/WHILEinIF.output file && echo "WHILEinIF : Test Successful" || echo "WHILEinIF : Test Failed"
+	@rm -f file
+
+while:
+	@java -cp ../bin Main ./Instructions/WHILE/ConsecutiveWHILE.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/WHILE/ConsecutiveWHILE.output file && echo "ConsecutiveWHILE : Test Successful" || echo "ConsecutiveWHILE : Test Failed"
+	@rm -f file
+	@java -cp ../bin Main ./Instructions/WHILE/IFandELSEinWHILE.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/WHILE/IFandELSEinWHILE.output file && echo "IFandELSEinWHILE : Test Successful" || echo "IFandELSEinWHILE : Test Failed"
+	@rm -f file
+	@java -cp ../bin Main ./Instructions/WHILE/IFinWHILE.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/WHILE/IFinWHILE.output file && echo "IFinWHILE : Test Successful" || echo "IFinWHILE : Test Failed"
+	@rm -f file
+	@java -cp ../bin Main ./Instructions/WHILE/NestedWHILE.fs >file 
+	@diff -b --strip-trailing-cr ./Instructions/WHILE/NestedWHILE.output file && echo "NestedWHILE : Test Successful" || echo "NestedWHILE : Test Failed"
 	@rm -f file
 
 program:
@@ -64,11 +79,11 @@ fortrs:
 test:
 	@make atom
 	@make comments
-	@make errors
 	@make average
 	@make exponent
 	@make factorial
 	@make fibonacci
 	@make maximum
-	@make instructions
+	@make if
+	@make while
 	@make program

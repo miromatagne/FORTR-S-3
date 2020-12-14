@@ -8,4 +8,5 @@ BEGINPROG WHILEinIF
         ENDWHILE
 
     ENDIF
+    PRINT(a)
 ENDPROG

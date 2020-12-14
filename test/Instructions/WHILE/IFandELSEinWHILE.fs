@@ -9,4 +9,6 @@ BEGINPROG IFandELSEinWHILE
             b := 1
         ENDIF
     ENDWHILE
+    PRINT(a)
+    PRINT(b)
 ENDPROG

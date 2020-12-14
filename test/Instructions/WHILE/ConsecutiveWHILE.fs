@@ -7,4 +7,6 @@ BEGINPROG ConsecutiveWHILE   // RETESTER A PARTIR DE CA DANS LE FOLDER TEST/WHIL
     WHILE (a = 0) DO 
         a := a + 1
     ENDWHILE
+    PRINT(a)
+    PRINT(b)
 ENDPROG

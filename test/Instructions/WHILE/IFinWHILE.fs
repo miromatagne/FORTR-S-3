@@ -6,4 +6,5 @@ BEGINPROG Test
             a := a - 2
         ENDIF
     ENDWHILE
+    PRINT(a)
 ENDPROG

@@ -16,4 +16,7 @@ BEGINPROG IFinELSE
         ENDIF
         c := 0
     ENDIF
+    PRINT(a)
+    PRINT(b)
+    PRINT(c)
 ENDPROG
