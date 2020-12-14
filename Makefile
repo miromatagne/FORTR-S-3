@@ -13,4 +13,4 @@ exec:
 	java -jar dist/part3.jar -exec test/Program/Program.fs
 
 ast:
-	java -jar dist/part3.jar test/FortrS/Average.fs -ast test.tex
+	java -jar dist/part3.jar test/FortrS/Average.fs -ast ast.tex
