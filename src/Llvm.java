@@ -260,10 +260,10 @@ public class Llvm {
                         }
                         // The nth WHILE 
                         else if (children.get(i).getWCounter() > 1) {
-                            if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.WHILE_NT) {
-                                llvmCode.append("\tbr label %while" + children.get(i).getWCounter() + "\n");
-                                llvmCode.append("  wexit" + children.get(i).getWCounter() + ":\n");
-                            }
+                            //if (children.get(children.size()-1).getLabel().getType() == LexicalUnit.WHILE_NT) {
+                            llvmCode.append("\tbr label %while" + children.get(i).getWCounter() + "\n");
+                            llvmCode.append("  wexit" + children.get(i).getWCounter() + ":\n");
+                            //}
                         }
                         inLoop = false;
                         break;
