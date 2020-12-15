@@ -4,7 +4,7 @@ public class AST {
     ParseTree parseTree;
     
     /**
-     * Constructor, stores the ParseTree to be converted into ad AST as attribute
+     * Constructor, stores the ParseTree to be converted into an AST as attribute
      * @param parseTree ParseTree coming from the Parser
      */
     public AST(ParseTree parseTree) {
@@ -35,7 +35,7 @@ public class AST {
         int i = 0;
         while(i < children.size()) {
           switch (children.get(i).getLabel().getType()) {
-            //Replace unnecessary intermediate nodes by thir children
+            //Replace unnecessary intermediate nodes by third children
             case INSTRUCTION:
             case COMP:
               children.set(i, cleanTree(children.get(i).getChildren().get(0)));

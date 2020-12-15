@@ -92,7 +92,7 @@ public class Parser {
                 children.add(epsilonTree);
                 break;
             default:
-                // System.out.println("ERROR" + token.toString());
+                break;
         }
         Symbol code = new Symbol(LexicalUnit.CODE);
         ParseTree codeTree = new ParseTree(code, children);
@@ -133,7 +133,7 @@ public class Parser {
                 children.add(read());
                 break;
             default:
-                // System.out.println("ERROR");
+                break;
         }
         Symbol instruction = new Symbol(LexicalUnit.INSTRUCTION);
         ParseTree instructionTree = new ParseTree(instruction, children);
@@ -298,7 +298,7 @@ public class Parser {
                 match(new Symbol(LexicalUnit.NUMBER), children);
                 break;
             default:
-                // System.out.println("ERROR ATOM");
+                break;
         }
         Symbol atom = new Symbol(LexicalUnit.ATOM);
         ParseTree tree = new ParseTree(atom, children);
@@ -348,7 +348,7 @@ public class Parser {
                 match(new Symbol(LexicalUnit.ENDIF), children);
                 break;
             default:
-                // System.out.println("ERROR");
+                break;
         }
         Symbol ifTail = new Symbol(LexicalUnit.IFTAIL);
         ParseTree ifTailTree = new ParseTree(ifTail, children);
@@ -390,7 +390,7 @@ public class Parser {
                 match(new Symbol(LexicalUnit.GT), children);
                 break;
             default:
-                // System.out.println("ERROR");
+                break;
         }
         Symbol comp = new Symbol(LexicalUnit.COMP);
         ParseTree compTree = new ParseTree(comp, children);
@@ -497,7 +497,7 @@ public class Parser {
                 children.add(epsilonTree);
                 break;
             default:
-                // System.out.println("ERROR");
+                break;
         }
         Symbol endLinePrime = new Symbol(LexicalUnit.ENDLINEPRIME);
         ParseTree endLinePrimeTree = new ParseTree(endLinePrime, children);
