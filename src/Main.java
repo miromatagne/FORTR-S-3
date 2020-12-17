@@ -9,19 +9,21 @@ import java.io.IOException;
 import java.sql.Time;
 
 /* 
-    INFO-F-430 project, Part 2
+    INFO-F-430 project, Part 3
 
     Students :
         -MATAGNE Miro-Manuel (459668)
         -TRAN NGOC Linh (459764)
     
-    Design of a parser for a FORTR-S compiler
+    LLVM code generation for a FORTR-S compiler
 */
 
 public class Main {
   /**
-   * Main function, creates an instance of the LexicalAnalyzer class and prints
-   * out the tokens it returns.
+   * Main function, creates an instance of the LexicalAnalyzer class,
+   * sends the tokens to the Parser who returns a parse tree, which is
+   * used to generate an AST and LLVM IR code which is printed to the 
+   * standard output.
    * 
    * @param argv arguments written to the command line
    */
@@ -65,6 +67,8 @@ public class Main {
       tokens = getTokens(fileName);
       Parser parser = new Parser(tokens, false);
       List<Integer> rules = parser.start();
+      //Check there were no errors during parsing
+      if(rules != null) {
       ParseTree ast = new AST(parser.getTree()).getAST();
       Llvm llvm = new Llvm(ast);
       String code = llvm.getLlvm();
@@ -114,6 +118,7 @@ public class Main {
         }
       }
     }
+  }
   }
 
   /**
