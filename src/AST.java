@@ -21,7 +21,7 @@ public class AST {
         ParseTree tree3 = removeExprArith(tree2);
         ParseTree tree4 = fixAssociativity(tree3);
         ParseTree ast = finalCleanUp(tree4);
-        return parseTree;
+        return ast;
     }
 
     /**
