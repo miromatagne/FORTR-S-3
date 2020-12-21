@@ -147,7 +147,6 @@ public class Main {
             symbolTable.put(receivedSymbol.getValue().toString(), receivedSymbol.getLine());
           }
         }
-        // System.out.println(receivedSymbol.toString());
         tokens.add(receivedSymbol);
         receivedSymbol = scanner.nextToken();
       }
